@@ -1,0 +1,48 @@
+.Profile {
+  margin-top: 100px;
+  display: flex;
+  width: 100%;
+}
+
+.user_info {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bios_part {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bios_part img {
+  width: 70px;
+  height: 70px;
+}
+
+.buttons {
+  margin-top: 40px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.buttons button {
+  margin: 10px;
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  border: none;
+  background-color: #f5f5f5;
+  color: #000;
+}
+
+.user_posts {
+  border: #ebebeb solid 1px;
+  text-wrap: wrap;
+}
+
