@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HOIM6a9cRld1wcyGl7K5ffkpgwpGcL6srt13c2c0+plS2JwoZH0Ws4ozZh51qSA6AEtSiqneHvb9gZdxT5Xkmg==",
+  "dgSpecHash": "bNVgK7U75HR+Yvma//NsX42Bz3vZCQHpND40myjhMod/yIY60AI49XKsaP4gEgLALGo3PgEeYTIcoD2CjJT9Qg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\SP\\OneDrive\\Dokumentumok\\Backend\\BiblAI\\BiblAI.csproj",
+  "projectFilePath": "C:\\Users\\SP\\Source\\Repos\\BiblAI\\Backend\\BiblAI\\BiblAI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\SP\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.12\\microsoft.entityframeworkcore.7.0.12.nupkg.sha512",
     "C:\\Users\\SP\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.12\\microsoft.entityframeworkcore.abstractions.7.0.12.nupkg.sha512",

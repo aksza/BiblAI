@@ -9,6 +9,8 @@
             Answer = answer;
             Anonym = anonym;
             User = user;
+            Date = DateTime.Now;
+
         }
 
         public int Id { get; set; }
@@ -16,7 +18,7 @@
         public string Answer { get; set; }
         public bool Anonym { get; set; }
         public User User { get; set; }
-        public DateOnly Date { get; set; }
+        public DateTime Date { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Like> Likes { get; set; }
         public ICollection<Hashtag> Hashtags { get; set; }

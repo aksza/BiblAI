@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\SP\\OneDrive\\Dokumentumok\\Backend\\BiblAI\\BiblAI.csproj": {}
+    "C:\\Users\\SP\\Source\\Repos\\BiblAI\\Backend\\BiblAI\\BiblAI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\SP\\OneDrive\\Dokumentumok\\Backend\\BiblAI\\BiblAI.csproj": {
+    "C:\\Users\\SP\\Source\\Repos\\BiblAI\\Backend\\BiblAI\\BiblAI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\SP\\OneDrive\\Dokumentumok\\Backend\\BiblAI\\BiblAI.csproj",
+        "projectUniqueName": "C:\\Users\\SP\\Source\\Repos\\BiblAI\\Backend\\BiblAI\\BiblAI.csproj",
         "projectName": "BiblAI",
-        "projectPath": "C:\\Users\\SP\\OneDrive\\Dokumentumok\\Backend\\BiblAI\\BiblAI.csproj",
+        "projectPath": "C:\\Users\\SP\\Source\\Repos\\BiblAI\\Backend\\BiblAI\\BiblAI.csproj",
         "packagesPath": "C:\\Users\\SP\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\SP\\OneDrive\\Dokumentumok\\Backend\\BiblAI\\obj\\",
+        "outputPath": "C:\\Users\\SP\\Source\\Repos\\BiblAI\\Backend\\BiblAI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\SP\\AppData\\Roaming\\NuGet\\NuGet.Config",
