@@ -1,0 +1,40 @@
+.Post {
+  border: 1px solid #ccc;
+  margin: 100px;
+}
+
+.question_area {
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.profile_info_area {
+  display: flex;
+  align-items: center;
+  justify-content:flex-end;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile_info_area img {
+  width: 20px;
+  height: 20px;
+  margin: 10px;
+}
+
+.answer_area {
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.feedback_area {
+  display: flex;
+  align-items: center;
+  justify-content:flex-end;
+  padding: 5px;
+}
+
+.feedback_area > img {
+  width: 20px;
+  height: 20px;
+  margin: 10px;
+}
