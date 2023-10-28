@@ -1,0 +1,48 @@
+{
+  "userInfo" : {
+      "userName" : "suciu.aksza",
+      "profilePictureUrl" : "https://i.pinimg.com/474x/98/51/1e/98511ee98a1930b8938e42caf0904d2d.jpg",
+      "userId" : 0,
+      "firstName" : "Aksza",
+      "lastName" : "Suciu",
+      "bio" : "I am a Christian and I love Jesus!",
+      "gender" : "false",
+      "birthday" : "1998-12-20",
+      "married" : "false",
+      "religion" : "Faith church"
+  },
+  "posts" : [
+    {
+      "userName" : "suciu.aksza",
+      "question" : "What is the meaning of life?",
+      "answer" : "The meaning of life is to love God and to love your neighbor as yourself.",
+      "verses" : [
+          {
+              "book" : "Matthew",
+              "chapter" : 22,
+              "verse" : 37
+          },
+          {
+              "book" : "Matthew",
+              "chapter" : 22,
+              "verse" : 39
+          }
+      ],
+      "userId" : 1,
+      "profilePictureUrl" : "https://i.pinimg.com/474x/98/51/1e/98511ee98a1930b8938e42caf0904d2d.jpg",
+      "likesNum" : 5,
+      "dislikesNum" : 1,
+      "commentsNum" : 1,
+      "comments" : [
+          {
+              "userName" : "simon.peter",
+              "author" : "false",
+              "content" : "I loved this answer becouse it's the truth!",
+              "likesNum" : 3,
+              "userId" : 2,
+              "profilePictureUrl" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3HWiMNcayzEoGFI70CWs-4GRnFFMgIcR4Ig&usqp=CAU"
+          }
+      ]
+    }
+  ]
+}
