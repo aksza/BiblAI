@@ -15,6 +15,9 @@
             Married = married;
             Bios = bios;
             Religion = religion;
+            Comments = null;
+            Posts = null;
+            Likes = null;
         }
 
         public int Id { get; set; }

@@ -2,7 +2,7 @@
 {
     public class Post
     {
-        public Post(int id, string question, string answer, bool anonym, User user)
+        public Post(int id, string question, string answer, bool anonym, User user, ICollection<Comment> comments)
         {
             Id = id;
             Question = question;
@@ -10,7 +10,9 @@
             Anonym = anonym;
             User = user;
             Date = DateTime.Now;
-
+            Comments = comments;
+            Likes = null;
+            PostHashtag = null;
         }
 
         public int Id { get; set; }

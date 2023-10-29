@@ -1,4 +1,5 @@
-﻿using BiblAI.Interfaces;
+﻿using BiblAI.Dto;
+using BiblAI.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BiblAI.Controllers
@@ -16,7 +17,20 @@ namespace BiblAI.Controllers
 
         [HttpGet("{userId}")]
         public IActionResult GetUserById(int userId) {
-            return Ok(_userRepository.GetUserById(userId));
+            var user = _userRepository.GetUserById(userId);
+            var userDto = new UserDto
+            {
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Bios = user.Bios,
+                Gender = user.Gender,
+                Married = user.Married,
+                Religion = user.Religion,
+                BirthDate = user.BirthDate,
+            };
+            
+            return Ok(userDto);
         }
     }
 }
