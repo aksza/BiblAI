@@ -10,19 +10,22 @@ namespace BiblAI.Data
 
         }
 
-        public DbSet<User> User { get; set; }
-        public DbSet<Post> Post { get; set; }
-        public DbSet<Comment> Comment { get; set; }
-        public DbSet<Like> Like { get; set; }
-        public DbSet<Hashtag> Hashtag { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Hashtag> Hashtags { get; set; }
+        public DbSet<Verse> Verses { get; set; }
+        public DbSet<PostHashtag> PostHashtags { get; set; }
 
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PostHashtag>()
                  .HasKey(ph => new { ph.PostId, ph.HashtagId });
             modelBuilder.Entity<PostHashtag>()
                     .HasOne(p => p.Post)
-                    .WithMany(ph => ph.PostHashtag)
+                    .WithMany(ph => ph.PostHashtags)
                     .HasForeignKey(p => p.PostId);
             modelBuilder.Entity<PostHashtag>()
                     .HasOne(h => h.Hashtag)

@@ -4,7 +4,6 @@ namespace BiblAI.Dto
 {
     public class PostDto
     {
-
         public int Id { get; set; }
         public string Question { get; set; }
         public string Answer { get; set; }
@@ -17,7 +16,6 @@ namespace BiblAI.Dto
         public ICollection<CommentDto> Comments { get; set; }
         public int NumLikes { get; set; }
         public int NumDislike { get; set; }
-
         public ICollection<PostHashtag> PostHashtag { get; set; }
     }
 }

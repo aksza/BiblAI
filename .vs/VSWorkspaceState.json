@@ -1,11 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\dotnet-be",
-    "\\dotnet-be\\BiblAI",
-    "\\dotnet-be\\BiblAI\\Controllers",
-    "\\dotnet-be\\BiblAI\\Models"
+    ""
   ],
-  "SelectedNode": "\\dotnet-be\\BiblAI\\Controllers\\PostController.cs",
+  "SelectedNode": "\\BiblAI.sln",
   "PreviewInSolutionExplorer": false
 }
