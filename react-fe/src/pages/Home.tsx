@@ -8,27 +8,59 @@ import { Post } from '../components/Post';
 
 interface Posts {
   userName: string;
+  userId: number;
+  posts: Ppost[];
+}
+
+export interface Users {
+  userInfo: Uuser;
   posts: Ppost[];
 }
 
 export interface Ppost {
+  id: number;
+  userName: string;
   question: string;
   answer: string;
+  verses: Vvers[];
+  userId: number;
+  profilePictureUrl: string;
+  likesNum: number;
+  dislikesNum: number;
+  commentsNum: number;
   anonym: boolean;
-  user: Uuser;
+  comments: Ccommnent[];
+}
+
+export interface Ccommnent {
+  id: number;
+  userName: string;
+  content: string;
+  userId: number;
+  postId: number;
+  likesNum: number;
+  profilePictureUrl: string;
+  author: boolean;
+}
+
+export interface Vvers {
+  book: string;
+  chapter: number;
+  verse: number;
 }
 
 export interface Uuser {
-  id: number;
+  userId: number;
   userName: string;
   firstName: string;
+  profilePictureUrl: string;
   lastName: string;
   email: string;
   password: string;
   birthDate: string;
   gender: boolean;
   married: boolean;
-  bios: string;
+  bio: string;
   religion: string;
   posts: null;
 }
@@ -41,12 +73,13 @@ export const Home = () => {
   const [posts, setPosts] = useState<Posts>({} as Posts);
 
   const { data, isLoading, isError, refetch } = useQuery(['posts'], () => {
-    return Axios.get(`https://localhost:7060/api/Post`)
+    return Axios.get(`http://localhost:7060/home`)
       .then((res) => {
         console.log(res.data);
         setPosts(res.data);
       });
   });
+  
 
 
 

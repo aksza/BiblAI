@@ -5,6 +5,7 @@ import {Home} from './pages/Home';
 import {Profile} from './pages/Profile';
 import {Header} from './components/Header';
 import '../src/styles/app.css';
+import Login from './pages/Login';
 
 function App() {
 
@@ -24,7 +25,8 @@ function App() {
           <Header />
           <Routes>
             <Route path="/home" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:userId" element={<Profile />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </Router>
       </QueryClientProvider>

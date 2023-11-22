@@ -13,6 +13,7 @@
   },
   "posts" : [
       {
+          "id" : 0,
           "userName" : "szoverfi.dani",
           "question" : "Who is Jesus according to the Bible?",
           "answer" : "Jesus is the son of God, who died for our sins. He is the savior of the world. He is the way, the truth and the life.",
@@ -36,7 +37,7 @@
           "comments" : [
               {
                   "userName" : "szoverfi.dani",
-                  "author" : "true",
+                  "author" : true,
                   "content" : "I loved this answer becouse it's the truth!",
                   "likesNum" : 3,
                   "userId" : 0,
@@ -44,7 +45,7 @@
               },
               {
                   "userName" : "suciu.aksza",
-                  "author" : "false",
+                  "author" : false,
                   "content" : "The verses are talking to my soul!",
                   "likesNum" : 1,
                   "userId" : 1,

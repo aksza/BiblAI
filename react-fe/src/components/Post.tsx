@@ -1,6 +1,13 @@
 import {Ppost, Uuser} from '../pages/Home'
 import {Link} from 'react-router-dom';
 import '../styles/post_card.css'
+import '../styles/comment.css'
+import React, { useState } from 'react';
+import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { PostCard } from './PostCard';
+import { CommentSection } from './CommentSection';
+
+
 
 interface PostProps {
   post: Ppost;
@@ -12,26 +19,22 @@ interface UserProps {
 
 
 export const Post: React.FC<PostProps> = ({ post }) => {
+  const [postModalOpen, setPostModalOpen] = useState(false);
+  const handlePostModalOpen = () => setPostModalOpen(true);
+  const handlePostModalClose = () => setPostModalOpen(false);
+
   return (
     <div className="Post">
-      <div className="question_area">
-        <p>{[post.question]}</p>
-      </div>
-      <div className="profile_info_area">
-        <p>{post.user.userName}</p>
-        <Link to="/profile"><img src="https://cdn-icons-png.flaticon.com/128/3917/3917711.png" alt="" /></Link>
-      </div>
-      <div className="answer_area">
-        <p>{[post.answer]}</p>
-      </div>
-      <div className="feedback_area">
-        <p>1</p>
-        <img src="https://cdn-icons-png.flaticon.com/128/3916/3916818.png" alt="" />
-        <p>1</p>
-        <img src="https://cdn-icons-png.flaticon.com/128/3916/3916823.png" alt="" />
-        <p>0</p>
-        <img src="https://cdn-icons-png.flaticon.com/128/3916/3916599.png" alt="" />
-      </div>
+      <PostCard post={post} handlePostModalOpen={handlePostModalOpen} />
+      <Dialog open={postModalOpen} onClose={handlePostModalClose} maxWidth="md" fullWidth>
+        <DialogTitle>{post.question}</DialogTitle>
+        <DialogContent>
+          <PostCard post={post} handlePostModalOpen={handlePostModalOpen} />
+          <CommentSection post={post} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
+

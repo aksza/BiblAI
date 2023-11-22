@@ -3,30 +3,41 @@ import Axios from 'axios';
 import { useState } from 'react';
 import { useQuery } from "react-query"
 import '../styles/profile_page.css'
+import { useParams } from 'react-router-dom';
+import { Users, Ppost } from '../pages/Home';
+import { Post } from '../components/Post';
 
 
 
 export const Profile = () => {
-  const [user, setUser] = useState<Uuser>({} as Uuser);
-
-
+  const [user, setUser] = useState<Users>({} as Users);
+  const { userId } = useParams();
 
   const { data, isLoading, isError, refetch } = useQuery(['user'], () => {
-    return Axios.get(`https://localhost:7060/api/User/2`)
+    return Axios.get(`http://localhost:7060/profile/${userId}`)
       .then((res) => {
         console.log(res.data);
         setUser(res.data);
       });
   });
 
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading user data.</div>;
+  }
+
   return (
     <div className="Profile">
       <div className="user_info">
         <div className="bios_part">
-          <img src="https://cdn-icons-png.flaticon.com/128/3917/3917711.png" alt="" />
+          <img src={user.userInfo.profilePictureUrl} alt="blank" /> 
           <div className="right_bios_part">
-            <p><b>@{user.userName}</b> {user.firstName} {user.lastName}</p>
-            <p>{user.bios}</p>
+            <p><b>@{user.userInfo.userName}</b> {user.userInfo.firstName} {user.userInfo.lastName}</p>
+            <p>{user.userInfo.bio}</p>
           </div>
         </div>
         <div className="buttons">
@@ -37,7 +48,9 @@ export const Profile = () => {
         
       </div>
       <div className="user_posts">
-        <p>Ide fognak jönni a bal oldalon láthatő szűrők alapján az adott felhasználó postjai</p>
+        {user.posts?.map((post: Ppost) => (
+          <Post key={post.question} post={post} />
+        ))}
       </div>
     </div>
   );
