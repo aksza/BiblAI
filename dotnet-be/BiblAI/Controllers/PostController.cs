@@ -1,5 +1,8 @@
-﻿using BiblAI.Dto;
+﻿using AutoMapper;
+using BiblAI.Dto;
 using BiblAI.Interfaces;
+using BiblAI.Models;
+using BiblAI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BiblAI.Controllers
@@ -9,15 +12,20 @@ namespace BiblAI.Controllers
     public class PostController : Controller
     {
         private readonly IPostRepository _postRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public PostController(IPostRepository postRepository)
+        public PostController(IPostRepository postRepository, IMapper mapper, IUserRepository userRepository)
         {
             _postRepository = postRepository;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetPosts() {
-            var response = new
+            return Ok(_postRepository.GetPosts());
+            /*var response = new
             {
                 posts = _postRepository.getPosts().Select(p => new PostDto
                 {
@@ -33,12 +41,10 @@ namespace BiblAI.Controllers
                     //null ha akarod futattni
                     Comments = p.Comments.Select(c => new CommentDto
                     {
-                        Id = c.Id,
                         Content = c.Content,
                         UserId = c.User.Id,
                         UserName = c.User.UserName,
                         ProfilePictureUrl = "idk",
-                        Date = c.Date,
                         NumDislikes = 5,
                         NumLikes = 7
                     }).ToList(),
@@ -48,7 +54,27 @@ namespace BiblAI.Controllers
                 }),
                 userName = "szoverfi.dani"
             };
-            return Ok(response);    
+            return Ok(response);   */
+        }
+
+        [HttpPost]
+        public IActionResult CreateUser([FromBody] PostCreateDto postDto)
+        {
+            if (postDto == null)
+                return BadRequest(ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var postMap = _mapper.Map<Post>(postDto);
+            postMap.User = _userRepository.GetUserById(postDto.UserId);
+
+            if (!_postRepository.CreatePost(postMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
         }
     }
 }
