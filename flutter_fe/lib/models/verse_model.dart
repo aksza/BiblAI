@@ -1,13 +1,10 @@
-class Verse{
-  
-}
 
-class VerseInfo{
+class Verse{
   final String book;
   final int chapter;
   final int verse;
 
-  VerseInfo({
+  Verse({
     required this.book,
     required this.chapter,
     required this.verse

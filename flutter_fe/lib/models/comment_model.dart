@@ -1,10 +1,6 @@
 import 'dart:ffi';
 
 class Comment{
-
-}
-
-class CommentInfo{
   final int commentId;
   final String userName;
   final String content;
@@ -14,7 +10,7 @@ class CommentInfo{
   final String profilePictureUrl;
   final Bool author;
 
-  CommentInfo({
+  Comment({
     required this.commentId,
     required this.userName,
     required this.content,

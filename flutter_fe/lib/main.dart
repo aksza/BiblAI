@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/screens/home_screen.dart';
+import 'package:flutter_fe/screens/login_screen.dart';
 import 'package:flutter_fe/screens/message_screen.dart';
 import 'package:flutter_fe/screens/profile_screen.dart';
+import 'package:flutter_fe/screens/register_screen.dart';
 import 'package:flutter_fe/screens/search_screen.dart';
 import 'package:flutter_fe/screens/splash_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
     Map<String, WidgetBuilder> _getRoutes() {
     return {
-      '/': (context) => SplashScreenPage(),
+      '/': (context) => const SplashScreenPage(),
       HomeScreen.routeName: (context) => const HomeScreen(),
       ProfileScreen.routeName: (context) => const ProfileScreen(),
       SearchScreen.routeName: (context) => const SearchScreen(),

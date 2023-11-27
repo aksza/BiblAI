@@ -10,6 +10,64 @@ class User{
     required this.userInfo,
     this.posts
   });
+
+  static List<User> users = 
+  [
+    User(
+      userInfo: UserInfo(
+        birthDate: '2002.09.18',
+        userId: 1,
+        userName: 'akszasuciu12',
+        firstName: 'Aksza',
+        lastName: 'Suciu',
+        profilePictureUrl: 'assets/images/aksza.jpeg',
+        email: 'suciuaksza12@gmail.com',
+        password: 'akszavagyok12',
+        gender: true,
+        married: false,
+        bio: 'aksza vagyok sziasztok',
+        religion: 'karizmatikus',
+        posts: null
+      ),
+      posts: null
+    ),
+    User(
+      userInfo: UserInfo(
+        birthDate: '2002.04.28',
+        userId: 2,
+        userName: 'szoverfidani',
+        firstName: 'Dani',
+        lastName: 'Szoverfi',
+        profilePictureUrl: 'assets/images/dani.jpeg',
+        email: 'szoverfidani@gmail.com',
+        password: 'daniprofil123',
+        gender: false,
+        married: true,
+        bio: 'dani vagyok hello',
+        religion: 'reformatus',
+        posts: null
+      ),
+      posts: null
+    ),
+    User(
+      userInfo: UserInfo(
+        birthDate: '2003.06.09',
+        userId: 3,
+        userName: 'peteredeti',
+        firstName: 'Peter',
+        lastName: 'Simon',
+        profilePictureUrl: 'assets/images/peter.jpeg',
+        email: 'petersimon@gmail.com',
+        password: 'peterposztok321',
+        gender: false,
+        married: false,
+        bio: 'peteredeti vok hello',
+        religion: 'presbiterianus',
+        posts: null
+      ),
+      posts: null
+    )
+  ];
 }
 
 class UserInfo{
@@ -21,11 +79,11 @@ class UserInfo{
   String email;
   String password;
   String birthDate;
-  Bool gender;
-  Bool? married;
+  bool gender;
+  bool? married;
   String? bio;
   String? religion;
-  String? posts;
+  List<Post>? posts;
 
   UserInfo({
     required this.userId,
@@ -42,5 +100,12 @@ class UserInfo{
     this.religion,
     this.posts
   });
+
+  String getUsername(userId){
+    if(userId == this.userId){
+      return userName;
+    }
+    return 'username not found';
+  }
 }
 
