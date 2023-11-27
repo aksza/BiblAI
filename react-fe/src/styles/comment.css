@@ -1,0 +1,32 @@
+.comment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+}
+
+
+
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  
+}
+.commentHeader img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+
+.commentFeedback img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.commentFeedback {
+    display: flex;
+    align-items: center;
+}

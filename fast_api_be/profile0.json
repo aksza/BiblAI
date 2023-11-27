@@ -1,0 +1,57 @@
+{
+  "userInfo" : {
+      "userName" : "szoverfi.dani",
+      "profilePictureUrl" : "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg",
+      "userId" : 0,
+      "firstName" : "Daniel",
+      "lastName" : "Szoverfi",
+      "bio" : "I am a Christian and I love Jesus!",
+      "gender" : "true",
+      "birthday" : "1998-12-20",
+      "married" : "false",
+      "religion" : "Reformed"
+  },
+  "posts" : [
+      {
+          "id" : 0,
+          "userName" : "szoverfi.dani",
+          "question" : "Who is Jesus according to the Bible?",
+          "answer" : "Jesus is the son of God, who died for our sins. He is the savior of the world. He is the way, the truth and the life.",
+          "verses" : [
+              {
+                  "book" : "John",
+                  "chapter" : 3,
+                  "verse" : 16
+              },
+              {
+                  "book" : "John",
+                  "chapter" : 14,
+                  "verse" : 6
+              }
+          ],
+          "userId" : 0,
+          "profilePictureUrl" : "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg",
+          "likesNum" : 10,
+          "dislikesNum" : 2,
+          "commentsNum" : 2,
+          "comments" : [
+              {
+                  "userName" : "szoverfi.dani",
+                  "author" : true,
+                  "content" : "I loved this answer becouse it's the truth!",
+                  "likesNum" : 3,
+                  "userId" : 0,
+                  "profilePictureUrl" : "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"
+              },
+              {
+                  "userName" : "suciu.aksza",
+                  "author" : false,
+                  "content" : "The verses are talking to my soul!",
+                  "likesNum" : 1,
+                  "userId" : 1,
+                  "profilePictureUrl" : "https://i.pinimg.com/474x/98/51/1e/98511ee98a1930b8938e42caf0904d2d.jpg"
+              }
+          ]
+      }
+  ]
+}
