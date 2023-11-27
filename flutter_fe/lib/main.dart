@@ -12,6 +12,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
   @override
     Map<String, WidgetBuilder> _getRoutes() {
     return {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       SearchScreen.routeName: (context) => const SearchScreen(),
       MessageScreen.routeName: (context) => const MessageScreen(),
     };
+
   }
 
   @override
@@ -37,3 +39,4 @@ class MyApp extends StatelessWidget {
       
   }
 }
+
