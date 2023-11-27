@@ -10,13 +10,23 @@ namespace BiblAI.Helper
     {
         public Mapping()
         {
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.Posts, opt => opt.MapFrom(src => src.Posts))
+                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments));
             CreateMap<UserCreateDto, User>();
-            CreateMap<Post, PostDto>();
+            CreateMap<Post, PostDto>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom<UserNameResolver>())
+                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
+                .ForMember(dest => dest.NumLikes, opt => opt.MapFrom<NumPostLikesResolver>())
+                .ForMember(dest => dest.NumDislikes, opt => opt.MapFrom<NumPostDislikesResolver>());
             CreateMap<PostCreateDto, Post>();
-            CreateMap<Comment, CommentDto>();
+            CreateMap<Comment, CommentDto>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom<UserNameResolver2>())
+                .ForMember(dest => dest.NumLikes, opt => opt.MapFrom<NumCommentLikesResolver>())
+                .ForMember(dest => dest.NumDislikes, opt => opt.MapFrom<NumCommentDislikesResolver>());
             CreateMap<CommentCreateDto, Comment>();
-            CreateMap<LikeCreateDto, Like>();
+            CreateMap<LikeCreateDto, Like>()
+                .ForMember(dest => dest.CommentId, opt => opt.Ignore());
         }
     }
 }

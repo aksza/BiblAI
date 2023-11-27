@@ -1,6 +1,7 @@
 ﻿using BiblAI.Data;
 using BiblAI.Interfaces;
 using BiblAI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiblAI.Repository
 {
@@ -27,7 +28,9 @@ namespace BiblAI.Repository
 
         public User GetUserById(int id)
         {
-            return _context.Users.Where(u => u.Id == id).FirstOrDefault();
+            return _context.Users.Where(u => u.Id == id)
+                .Include(u => u.Posts).Include(u => u.Comments)
+                .FirstOrDefault();
         }
 
         public ICollection<User> GetUsers()

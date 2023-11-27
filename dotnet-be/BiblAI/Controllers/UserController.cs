@@ -22,11 +22,10 @@ namespace BiblAI.Controllers
         [HttpGet("{userId}")]
         public IActionResult GetUserById(int userId) {
             var user = _mapper.Map<UserDto>(_userRepository.GetUserById(userId));
-            
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public IActionResult CreateUser([FromBody] UserCreateDto userDto)
         {
             if (userDto == null)

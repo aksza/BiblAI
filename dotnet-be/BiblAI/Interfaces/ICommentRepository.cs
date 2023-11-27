@@ -6,6 +6,7 @@ namespace BiblAI.Interfaces
     {
         bool CreateComment(Comment comment);
         bool DeleteComment(Comment comment);
+        bool CommentExists(int id);
         Comment GetCommentById(int id);
         bool Save();
     }

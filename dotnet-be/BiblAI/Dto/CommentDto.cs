@@ -10,5 +10,7 @@ namespace BiblAI.Dto
         public string ProfilePictureUrl { get; set; }
         public int NumLikes { get; set; }
         public int NumDislikes { get; set; }
+        public bool LikedByUser { get; set; }
+        public bool DislikedByUser { get; set; }
     }
 }

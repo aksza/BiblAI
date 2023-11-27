@@ -13,51 +13,26 @@ namespace BiblAI.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ILikeRepository _likeRepository;
         private readonly IMapper _mapper;
 
-        public PostController(IPostRepository postRepository, IMapper mapper, IUserRepository userRepository)
+        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
+            _likeRepository = likeRepository;
             _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetPosts() {
-            return Ok(_postRepository.GetPosts());
-            /*var response = new
-            {
-                posts = _postRepository.getPosts().Select(p => new PostDto
-                {
-                    Id = p.Id,
-                    Question = p.Question,
-                    Answer = p.Answer,
-                    Anonym = p.Anonym,
-                    UserName = p.User.UserName,
-                    UserId = p.User.Id,
-                    ProfilePictureUrl = "idk",
-                    Date = p.Date,
-                    CommentsNum = 5,
-                    //null ha akarod futattni
-                    Comments = p.Comments.Select(c => new CommentDto
-                    {
-                        Content = c.Content,
-                        UserId = c.User.Id,
-                        UserName = c.User.UserName,
-                        ProfilePictureUrl = "idk",
-                        NumDislikes = 5,
-                        NumLikes = 7
-                    }).ToList(),
-                    NumLikes = 7,
-                    NumDislike = 4,
-                    PostHashtag = p.PostHashtag
-                }),
-                userName = "szoverfi.dani"
-            };
-            return Ok(response);   */
+            var posts = _postRepository.GetPosts();
+            var postDtos = _mapper.Map<List<PostDto>>(posts);
+
+            return Ok(postDtos);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public IActionResult CreateUser([FromBody] PostCreateDto postDto)
         {
             if (postDto == null)
@@ -75,6 +50,80 @@ namespace BiblAI.Controllers
             }
 
             return Ok("Successfully created");
+        }
+
+        [HttpPost("like")]
+        public IActionResult LikePost([FromBody] LikeCreateDto likeDto)
+        {
+            if (likeDto == null)
+                return BadRequest(ModelState);
+
+            var like = _likeRepository.GetLikes()
+                .Where(l => l.UserId == likeDto.UserId && (l.PostId != null && l.PostId == likeDto.CommentId))
+                .FirstOrDefault();
+
+            if (like != null)
+            {
+                ModelState.AddModelError("", "User already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var likeMap = _mapper.Map<Like>(likeDto);
+            likeMap.User = _userRepository.GetUserById(likeDto.UserId);
+            likeMap.Post = _postRepository.GetPostById(likeDto.CommentId);
+
+            if (!_likeRepository.Like(likeMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
+
+        [HttpDelete("unlike")]
+        public IActionResult DeleteLikePost([FromBody] LikeDto likeDto)
+        {
+            if (!_likeRepository.PostLikeExists(likeDto.UserId, likeDto.CommentId))
+            {
+                return NotFound();
+            }
+
+            var likeToDelete = _likeRepository.GetPostLikeByIds(likeDto.UserId, likeDto.CommentId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_likeRepository.Unlike(likeToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting like");
+            }
+
+            return NoContent();
+        }
+        [HttpPut("update_like")]
+        public IActionResult UpdateLikePost([FromBody] LikeDto likeDto)
+        {
+            if (!_likeRepository.PostLikeExists(likeDto.UserId, likeDto.CommentId))
+            {
+                return NotFound();
+            }
+
+            var likeToUpdate = _likeRepository.GetPostLikeByIds(likeDto.UserId, likeDto.CommentId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            likeToUpdate.Type = !likeToUpdate.Type;
+
+            if (!_likeRepository.UpdateLike(likeToUpdate))
+            {
+                ModelState.AddModelError("", "Something went wrong updating like");
+            }
+
+            return NoContent();
         }
     }
 }

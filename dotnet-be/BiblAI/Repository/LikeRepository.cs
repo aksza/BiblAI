@@ -13,14 +13,30 @@ namespace BiblAI.Repository
             _context = context;
         }
 
+        public bool CommentLikeExists(int userId, int commentId)
+        {
+            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId));
+        }
+
+        public bool DeleteCommentLikes(ICollection<Like> likes)
+        {
+            _context.RemoveRange(likes);
+            return Save();
+        }
+
         public int GetCommentDislikes(int commentId)
         {
-            return _context.Likes.Count(l => l.Type == false && l.Comment.Id == commentId);
+            return _context.Likes.Count(l => l.Type == false && l.CommentId == commentId);
+        }
+
+        public Like GetCommentLikeByIds(int userId, int commentId)
+        {
+            return _context.Likes.Where(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId)).FirstOrDefault();
         }
 
         public int GetCommentLikes(int commentId)
         {
-            return _context.Likes.Count(l => l.Type == true && l.Comment.Id == commentId);
+            return _context.Likes.Count(l => l.Type == true && l.CommentId == commentId);
         }
 
         public ICollection<Like> GetLikes()
@@ -28,20 +44,35 @@ namespace BiblAI.Repository
             return _context.Likes.ToList();
         }
 
+        public ICollection<Like> GetLikesByCommentId(int commentId)
+        {
+            return _context.Likes.Where(l => l.CommentId != null && l.CommentId == commentId).ToList();
+        }
+
         public int GetPostDislikes(int postId)
         {
-            return _context.Likes.Count(l => l.Type == false && l.Post.Id == postId);
+            return _context.Likes.Count(l => l.Type == false && l.PostId == postId);
+        }
+
+        public Like GetPostLikeByIds(int userId, int commentId)
+        {
+            return _context.Likes.Where(l => l.UserId == userId && (l.PostId != null && l.PostId == commentId)).FirstOrDefault();
         }
 
         public int GetPostLikes(int postId)
         {
-            return _context.Likes.Count(l => l.Type == true && l.Post.Id == postId);
+            return _context.Likes.Count(l => l.Type == true && l.PostId == postId);
         }
 
         public bool Like(Like like)
         {
             _context.Add(like);
             return Save();
+        }
+
+        public bool PostLikeExists(int userId, int commentId)
+        {
+            return _context.Likes.Any(l => l.UserId == userId && (l.PostId != null && l.PostId == commentId));
         }
 
         public bool Save()
@@ -53,6 +84,12 @@ namespace BiblAI.Repository
         public bool Unlike(Like like)
         {
             _context.Remove(like);
+            return Save();
+        }
+
+        public bool UpdateLike(Like like)
+        {
+            _context.Update(like);
             return Save();
         }
     }

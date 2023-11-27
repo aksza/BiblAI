@@ -1,6 +1,7 @@
 ﻿using BiblAI.Data;
 using BiblAI.Interfaces;
 using BiblAI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiblAI.Repository
 {
@@ -32,7 +33,7 @@ namespace BiblAI.Repository
 
         public ICollection<Post> GetPosts()
         {
-            return _context.Posts.ToList();
+            return _context.Posts.Include(p => p.Comments).ToList();
         }
 
         public bool Save()

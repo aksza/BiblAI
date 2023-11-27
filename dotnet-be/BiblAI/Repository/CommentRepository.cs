@@ -12,6 +12,11 @@ namespace BiblAI.Repository
             _context = context;
         }
 
+        public bool CommentExists(int id)
+        {
+            return _context.Comments.Any(c => c.Id == id);
+        }
+
         public bool CreateComment(Comment comment)
         {
             _context.Add(comment);
