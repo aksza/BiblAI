@@ -12,7 +12,7 @@ namespace BiblAI.Dto
         public bool Married { get; set; }
         public string Bios { get; set; }
         public string Religion { get; set; }
+        public string ProfilePictureUrl { get; set; }
         public ICollection<PostDto> Posts { get; set; }
-        public ICollection<CommentDto> Comments { get; set; }
     }
 }
