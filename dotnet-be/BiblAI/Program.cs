@@ -2,19 +2,23 @@ using BiblAI;
 using BiblAI.Data;
 using BiblAI.Interfaces;
 using BiblAI.Repository;
+using BiblAI.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 //builder.Services.AddTransient<Seed>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+builder.Services.AddScoped<FastApiService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,21 +36,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-/*
-if (args.Length == 1 && args[0].ToLower() == "seeddata")
-    SeedData(app);
 
-void SeedData(IHost app)
-{
-    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-    using (var scope = scopedFactory.CreateScope())
-    {
-        var service = scope.ServiceProvider.GetService<Seed>();
-        service.SeedDataContext();
-    }
-}
-*/
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

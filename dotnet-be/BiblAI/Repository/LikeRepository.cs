@@ -2,6 +2,7 @@
 using BiblAI.Interfaces;
 using BiblAI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 
 namespace BiblAI.Repository
 {
@@ -11,6 +12,16 @@ namespace BiblAI.Repository
         public LikeRepository(DataContext context) 
         {
             _context = context;
+        }
+
+        public bool CommentDislikedByUser(int userId, int commentId)
+        {
+            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == true);
+        }
+
+        public bool CommentLikedByUser(int userId, int commentId)
+        {
+            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == false);
         }
 
         public bool CommentLikeExists(int userId, int commentId)
@@ -68,6 +79,16 @@ namespace BiblAI.Repository
         {
             _context.Add(like);
             return Save();
+        }
+
+        public bool PostDislikedByUser(int userId, int postId)
+        {
+            return _context.Likes.Any(l => l.UserId == userId && (l.PostId != null && l.PostId == postId) && l.Type == false);
+        }
+
+        public bool PostLikedByUser(int userId, int postId)
+        {
+            return _context.Likes.Any(l => l.UserId == userId && (l.PostId != null && l.PostId == postId) && l.Type == true);
         }
 
         public bool PostLikeExists(int userId, int commentId)

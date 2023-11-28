@@ -15,6 +15,11 @@ namespace BiblAI.Interfaces
         Like GetCommentLikeByIds(int userId, int commentId);
         bool PostLikeExists(int userId, int commentId);
         Like GetPostLikeByIds(int userId, int commentId);
+
+        bool PostLikedByUser(int userId, int postId);
+        bool PostDislikedByUser(int userId, int postId);
+        bool CommentLikedByUser(int userId, int commetId);
+        bool CommentDislikedByUser(int userId, int commentId);
         bool Like(Like like);
         bool UpdateLike(Like like);
         bool Unlike(Like like);
