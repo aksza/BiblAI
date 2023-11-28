@@ -29,7 +29,7 @@ namespace BiblAI.Repository
         public User GetUserById(int id)
         {
             return _context.Users.Where(u => u.Id == id)
-                .Include(u => u.Posts).Include(u => u.Comments)
+                .Include(u => u.Posts).ThenInclude(p => p.Comments)
                 .FirstOrDefault();
         }
 
