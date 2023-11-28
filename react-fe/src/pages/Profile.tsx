@@ -1,12 +1,12 @@
-import {Uuser} from '../pages/Home'
 import Axios from 'axios';
 import { useState } from 'react';
 import { useQuery } from "react-query"
 import '../styles/profile_page.css'
 import { useParams } from 'react-router-dom';
-import { Users, Ppost } from '../pages/Home';
 import { Post } from '../components/Post';
 
+import { Users } from '../../models/UserModel'
+import { Post as PostType } from '../../models/PostModel'
 
 
 export const Profile = () => {
@@ -14,7 +14,7 @@ export const Profile = () => {
   const { userId } = useParams();
 
   const { data, isLoading, isError, refetch } = useQuery(['user'], () => {
-    return Axios.get(`http://localhost:7060/profile/${userId}`)
+    return Axios.get(`https://localhost:7060/api/User/${userId}`)
       .then((res) => {
         console.log(res.data);
         setUser(res.data);
@@ -34,10 +34,10 @@ export const Profile = () => {
     <div className="Profile">
       <div className="user_info">
         <div className="bios_part">
-          <img src={user.userInfo.profilePictureUrl} alt="blank" /> 
+          <img src={user.profilePictureUrl} alt="blank" /> 
           <div className="right_bios_part">
-            <p><b>@{user.userInfo.userName}</b> {user.userInfo.firstName} {user.userInfo.lastName}</p>
-            <p>{user.userInfo.bio}</p>
+            <p><b>@{user.userName}</b> {user.firstName} {user.lastName}</p>
+            <p>{user.bios}</p>
           </div>
         </div>
         <div className="buttons">
@@ -48,7 +48,7 @@ export const Profile = () => {
         
       </div>
       <div className="user_posts">
-        {user.posts?.map((post: Ppost) => (
+        {user.posts?.map((post: PostType) => (
           <Post key={post.question} post={post} />
         ))}
       </div>

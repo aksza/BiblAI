@@ -5,7 +5,7 @@ import '../styles/header.css';
 
 
 export const Header = () => {
-  const userId = 0;
+  const userId = 1;
 
   return (
     <div className='Header'>

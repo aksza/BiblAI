@@ -1,4 +1,5 @@
-import {Ppost, Uuser} from '../pages/Home'
+import { Post as PostType} from '../../models/PostModel'
+import { Users } from '../../models/UserModel'
 import {Link} from 'react-router-dom';
 import '../styles/post_card.css'
 import '../styles/comment.css'
@@ -10,11 +11,11 @@ import { CommentSection } from './CommentSection';
 
 
 interface PostProps {
-  post: Ppost;
+  post: PostType;
 }
 
 interface UserProps {
-  user: Uuser;
+  user: Users;
 }
 
 

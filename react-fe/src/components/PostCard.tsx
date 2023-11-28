@@ -1,4 +1,5 @@
-import {Ppost, Uuser} from '../pages/Home'
+import { Post as PostType} from '../../models/PostModel'
+import { Users } from '../../models/UserModel'
 import {Link} from 'react-router-dom';
 import '../styles/post_card.css'
 import '../styles/comment.css'
@@ -6,12 +7,12 @@ import React, { useState } from 'react';
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 
 interface PostProps {
-    post: Ppost;
+    post: PostType;
     handlePostModalOpen: () => void;
   }
   
   interface UserProps {
-    user: Uuser;
+    user: Users;
   }
 
 export const PostCard: React.FC<PostProps> = ({ post, handlePostModalOpen }) => {
@@ -28,11 +29,11 @@ export const PostCard: React.FC<PostProps> = ({ post, handlePostModalOpen }) => 
                 <p>{[post.answer]}</p>
             </div>
             <div className="feedback_area">
-                <p>{post.likesNum}</p>
+                <p>{post.numLikes}</p>
                 <img src="https://cdn-icons-png.flaticon.com/128/3916/3916818.png" alt="" />
-                <p>{post.dislikesNum}</p>
+                <p>{post.numDislikes}</p>
                 <img src="https://cdn-icons-png.flaticon.com/128/3916/3916823.png" alt="" />
-                <p>{post.commentsNum}</p>
+                <p>{post.comments.length}</p>
                 <img src="https://cdn-icons-png.flaticon.com/128/3916/3916599.png" onClick={handlePostModalOpen} alt="" />
             </div>
         </div>
