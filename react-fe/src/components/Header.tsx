@@ -9,7 +9,7 @@ export const Header = () => {
 
   return (
     <div className='Header'>
-      <Link to="/home"><img className='header_icons' src="https://cdn-icons-png.flaticon.com/128/3917/3917032.png" alt="" /></Link>
+      <Link to={`/home/${userId}`}><img className='header_icons' src="https://cdn-icons-png.flaticon.com/128/3917/3917032.png" alt="" /></Link>
       <input className='search_bar' type="text" placeholder="Search" />
       <Link to={`profile/${userId}`}><img className='header_icons' src="https://cdn-icons-png.flaticon.com/128/3917/3917711.png" alt="" /></Link>
     </div>
