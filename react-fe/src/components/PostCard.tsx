@@ -10,10 +10,6 @@ interface PostProps {
     post: PostType;
     handlePostModalOpen: () => void;
   }
-  
-  interface UserProps {
-    user: Users;
-  }
 
 export const PostCard: React.FC<PostProps> = ({ post, handlePostModalOpen }) => {
     return (

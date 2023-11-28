@@ -13,12 +13,9 @@ import '../styles/post_card.css'
 import '../styles/comment.css'
 import { redirect } from 'react-router-dom';
 
-interface PostProps {
-  post: PostType;
-}
 
 
-export const CommentSection: React.FC<PostProps> = ({ post }) => {
+export const CommentSection: React.FC<PostType> = (post: PostType) => {
     const [commentContent, setCommentContent] = useState('');
 
     function postComment() {
@@ -44,27 +41,6 @@ export const CommentSection: React.FC<PostProps> = ({ post }) => {
 
       setCommentContent('')
     }
-
-
-
-    // function postComment() {
-    //   fetchPost('https://localhost:7060/api/Comment/create', {
-    //     content: commentContent,
-    //     userId: 1,
-    //     postId: post.id,
-    //     date: new Date().toISOString()
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log('Error posting comment: ');
-    //     console.log(err);
-    //   })
-
-    //   setCommentContent('')
-    // }
-
 
 
     return (

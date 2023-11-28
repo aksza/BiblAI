@@ -49,7 +49,7 @@ export const Profile = () => {
       </div>
       <div className="user_posts">
         {user.posts?.map((post: PostType) => (
-          <Post key={post.question} post={post} />
+          <Post key={post.question} {...post} />
         ))}
       </div>
     </div>

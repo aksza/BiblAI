@@ -8,10 +8,6 @@ import { Posts, Post as PostType } from './../../models/PostModel'
 import '../styles/home.css'
 
 
-
-
-
-
 export const Home = () => {
   const [posts, setPosts] = useState<PostType[]>([] as PostType[]);
 
@@ -32,7 +28,7 @@ export const Home = () => {
       {isError && <div>Error fetching data</div>}
       <div>
         {posts.map((post: PostType) => (
-          <Post key={post.question} post={post} />
+          <Post key={post.question} {...post} />
         ))}
       </div>
     </div>

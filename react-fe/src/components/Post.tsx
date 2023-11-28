@@ -9,17 +9,7 @@ import { PostCard } from './PostCard';
 import { CommentSection } from './CommentSection';
 
 
-
-interface PostProps {
-  post: PostType;
-}
-
-interface UserProps {
-  user: Users;
-}
-
-
-export const Post: React.FC<PostProps> = ({ post }) => {
+export const Post: React.FC<PostType> = (post: PostType) => {
   const [postModalOpen, setPostModalOpen] = useState(false);
   const handlePostModalOpen = () => setPostModalOpen(true);
   const handlePostModalClose = () => setPostModalOpen(false);
@@ -31,7 +21,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
         <DialogTitle>{post.question}</DialogTitle>
         <DialogContent>
           <PostCard post={post} handlePostModalOpen={handlePostModalOpen} />
-          <CommentSection post={post} />
+          <CommentSection {...post} />
         </DialogContent>
       </Dialog>
     </div>
