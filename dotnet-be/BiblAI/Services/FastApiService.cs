@@ -21,15 +21,14 @@
         {
             try
             {
-                var url = "http://localhost:7070/get-answer";
+                var url = "http://127.0.0.1:7070/get-answer";
 
                 // Convert questionRequest to JSON
                 var jsonPayload = JsonConvert.SerializeObject(questionRequest);
-
+                
                 // Convert JSON payload to StringContent
                 var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-                //Console.WriteLine($"{jsonPayload}");
                 // Make a POST request to the FastAPI endpoint
                 var response = await _httpClient.PostAsync(url, content);
                 
@@ -40,22 +39,13 @@
                     // Read and deserialize the JSON response
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     var answer = JsonConvert.DeserializeObject<AiAnswer>(jsonResponse);
-                    if (answer == null)
-                    {
-                        answer = new AiAnswer()
-                        {
-                            Answer = "fake",
-                            Question = "fake",
-                            Time = "00:00"
-                        };
-                    }
+                    
                     return answer;
                 }
                 else
                 {
                     // Handle the case where the request was not successful
                     Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                    return null;
                 }
             }
             catch (Exception ex)
