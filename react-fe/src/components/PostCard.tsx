@@ -5,13 +5,39 @@ import '../styles/post_card.css'
 import '../styles/comment.css'
 import React, { useState } from 'react';
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { deleteLike, likePost, updateLike } from '../services/endpointFetching';
 
-interface PostProps {
+interface PostCardProps {
     post: PostType;
     handlePostModalOpen: () => void;
   }
 
-export const PostCard: React.FC<PostProps> = ({ post, handlePostModalOpen }) => {
+export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen }) => {
+
+    const likedPost = async () => {
+        if (!post.likedByUser && !post.dislikedByUser) {
+            likePost(true, 1, post.id)
+        } else if (post.likedByUser && !post.dislikedByUser) {
+            deleteLike(1, post.id)
+        } else if (!post.likedByUser && post.dislikedByUser) {
+            updateLike(1, post.id)
+        }
+
+        window.location.reload();
+    }
+
+    const dislikedPost = async () => {
+        if (!post.likedByUser && !post.dislikedByUser) {
+            likePost(false, 1, post.id)
+        } else if (!post.likedByUser && post.dislikedByUser) {
+            deleteLike(1, post.id)
+        } else if (post.likedByUser && !post.dislikedByUser) {
+            updateLike(1, post.id)
+        }
+
+        window.location.reload();
+    }
+
     return (
         <div className="PostCard">
             <div className="question_area">
@@ -26,9 +52,9 @@ export const PostCard: React.FC<PostProps> = ({ post, handlePostModalOpen }) => 
             </div>
             <div className="feedback_area">
                 <p>{post.numLikes}</p>
-                <img src="https://cdn-icons-png.flaticon.com/128/3916/3916818.png" alt="" />
+                <img src="https://cdn-icons-png.flaticon.com/128/3916/3916818.png" onClick={likedPost} alt="" />
                 <p>{post.numDislikes}</p>
-                <img src="https://cdn-icons-png.flaticon.com/128/3916/3916823.png" alt="" />
+                <img src="https://cdn-icons-png.flaticon.com/128/3916/3916823.png" onClick={dislikedPost} alt="" />
                 <p>{post.comments.length}</p>
                 <img src="https://cdn-icons-png.flaticon.com/128/3916/3916599.png" onClick={handlePostModalOpen} alt="" />
             </div>

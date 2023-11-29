@@ -1,24 +1,23 @@
 import Axios from 'axios';
 import { useState } from 'react';
 import { useQuery } from "react-query"
-import '../styles/profile_page.css'
 import { useParams } from 'react-router-dom';
 import { Post } from '../components/Post';
+import '../styles/profile_page.css'
 
 import { Users } from '../../models/UserModel'
 import { Post as PostType } from '../../models/PostModel'
+import { getProfile } from '../services/endpointFetching';
 
 
 export const Profile = () => {
   const [user, setUser] = useState<Users>({} as Users);
   const { userId } = useParams();
 
-  const { data, isLoading, isError, refetch } = useQuery(['user'], () => {
-    return Axios.get(`https://localhost:7060/api/User/${userId}`)
-      .then((res) => {
-        console.log(res.data);
-        setUser(res.data);
-      });
+  const { data, isLoading, isError, refetch } = useQuery(['user', userId ?? ''], () => getProfile(userId ?? ''), {
+    onSuccess: (data: Users) => {
+      setUser(data);
+    }
   });
 
 

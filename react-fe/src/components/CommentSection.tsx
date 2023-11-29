@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import Input from '@mui/material/Input';
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import Axios from 'axios';
-import { fetchPost } from '../services/fetchMethods';
+import { createComment, likeComment, updateCommentLike, deleteCommentLike } from '../services/endpointFetching';
+// import { CommentModel } from '../../models/CommentModel';
 
 
 
@@ -18,28 +19,33 @@ import { redirect } from 'react-router-dom';
 export const CommentSection: React.FC<PostType> = (post: PostType) => {
     const [commentContent, setCommentContent] = useState('');
 
-    function postComment() {
-      Axios.post(`https://localhost:7060/api/Comment/create`, 
-      {
-        content: "string2",
-        userId: 1,
-        postId: 1,
-        date: "2023-11-27T15:56:51.149Z"
-      }, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        }
-      })
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log('Error posting comment: ');
-        console.log(err);
-      })
-
+    const postComment = async () => {
+      createComment(commentContent, post.id, post.userId, new Date().toISOString())
       setCommentContent('')
+    }
+
+    const likeingComment = async (commentId : number, liked : boolean, disliked : boolean) => {
+      if (!liked && !disliked) {
+        likeComment(true, 1, commentId)
+      } else if (liked && !disliked) {
+        updateCommentLike(1, commentId)
+      } else if (!liked && disliked) {
+        deleteCommentLike(1, commentId)
+      }
+
+      window.location.reload();
+    }
+
+    const dislikeingComment = async (commentId : number, liked : boolean, disliked : boolean) => {
+      if (!liked && !disliked) {
+        likeComment(false, 1, commentId)
+      } else if (!liked && disliked) {
+        updateCommentLike(1, commentId)
+      } else if (liked && !disliked) {
+        deleteCommentLike(1, commentId)
+      }
+
+      window.location.reload();
     }
 
 
@@ -70,7 +76,9 @@ export const CommentSection: React.FC<PostType> = (post: PostType) => {
                   <div className='commentRight'>
                     <div className='commentFeedback'>
                       <p>{comment.numLikes}</p>
-                      <img src="https://cdn-icons-png.flaticon.com/128/2961/2961957.png" alt="" />
+                      <img src="https://cdn-icons-png.flaticon.com/128/2961/2961957.png" onClick={() => {likeingComment(comment.id, comment.likedByUser, comment.dislikedByUser)}} alt="" />
+                      <p>{comment.numDislikes}</p>
+                      <img src="https://cdn-icons-png.flaticon.com/128/2961/2961957.png" onClick={() => {dislikeingComment(comment.id, comment.likedByUser, comment.dislikedByUser)}} alt="" />
                     </div>
                   </div>
                 </div>

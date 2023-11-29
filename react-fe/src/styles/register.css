@@ -1,0 +1,36 @@
+.Register {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  form {
+    width: 400px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .TextField {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  
+  .RadioGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .RadioLabel {
+    display: flex;
+    align-items: center;
+  }
+  
+  .Button {
+    width: 100%;
+    margin-top: 15px;
+  }
+  

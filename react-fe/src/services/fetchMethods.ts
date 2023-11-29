@@ -1,50 +1,48 @@
-// import { Promise } from "bluebird";
+import axios, { AxiosRequestConfig } from 'axios';
 
+interface AxiosFetchOptions {
+  method: AxiosRequestConfig['method'];
+  url: string;
+  data?: any;
+}
 
-interface FetchOptions {
-    headers: {
-        "Content-Type": string;
-        Authorization: string;
-    };
-    method: string;
-    body?: string;
-    }
-
-export const fetchWithMethod = async <T>(
-  methodName: string,
-  url: string,
-  data?: T,
-  contentType = "application/json"
+export const axiosFetch = async <T>(
+  { method, url, data }: AxiosFetchOptions,
+  contentType = 'application/json'
 ): Promise<T> => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
 
-  const fetchOptions: FetchOptions = {
-    headers: {
-      "Content-Type": contentType,
-      Authorization: `Bearer ${token}`
-    },
-    method: methodName,
-    body: data
-      ? JSON.stringify(data, <TValue>(_key: string, value: TValue) => value)
-      : undefined,
+  const headers = {
+    'Content-Type': contentType,
+    Authorization: `Bearer ${token}`,
   };
 
-  return fetch(url, fetchOptions).then((res) =>
-    res.ok ? (res.json() as T) : Promise.reject(res)
-  );
+  const axiosOptions: AxiosRequestConfig = {
+    method,
+    url,
+    headers,
+    data,
+  };
+
+  try {
+    const response = await axios(axiosOptions);
+    return response.data as T;
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
-export const fetchGet = (apiEndpoint: string) =>
-  fetchWithMethod("GET", apiEndpoint);
+export const axiosGet = (url: string) =>
+  axiosFetch({ method: 'GET', url });
 
-export const fetchPost = <T>(apiEndpoint: string, data: T) =>
-  fetchWithMethod("POST", apiEndpoint, data);
+export const axiosPost = <T>(url: string, data: T) =>
+  axiosFetch({ method: 'POST', url, data });
 
-export const fetchPut = <T>(apiEndpoint: string, data: T) =>
-  fetchWithMethod("PUT", apiEndpoint, data);
+export const axiosPut = <T>(url: string, data: T) =>
+  axiosFetch({ method: 'PUT', url, data });
 
-export const fetchDelete = (apiEndpoint: string) =>
-  fetchWithMethod("DELETE", apiEndpoint);
+export const axiosDelete = <T>(url: string, data?: T) =>
+  axiosFetch({ method: 'DELETE', url, data });
 
-export const fetchPatch = <T>(apiEndpoint: string, data: T) =>
-  fetchWithMethod("PATCH", apiEndpoint, data);
+export const axiosPatch = <T>(url: string, data: T) =>
+  axiosFetch({ method: 'PATCH', url, data });
