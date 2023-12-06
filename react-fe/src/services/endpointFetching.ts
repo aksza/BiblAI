@@ -1,6 +1,7 @@
 import { axiosGet, axiosPost, axiosPut, axiosDelete } from "./fetchMethods";
 
 import { Post as PostType } from "../../models/PostModel"
+import { RegisterFormModel } from "../../models/RegisterFormModel";
 
 
 // ? GET REQUESTS
@@ -74,6 +75,15 @@ export const likeComment = async (type: boolean, userId: number, commentId: numb
             userId: userId,
             commentId: commentId,
         });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const registerUser = async (data: RegisterFormModel) => {
+    try {
+        const response = await axiosPost(`${process.env.REACT_APP_API_URL}/User/create`, data);
         return response;
     } catch (error) {
         throw error;

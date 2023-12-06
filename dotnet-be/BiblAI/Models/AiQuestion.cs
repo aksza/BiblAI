@@ -2,8 +2,8 @@
 {
     public class AiQuestion
     {
-        public string Question { get; set; }
-        public string Length { get; set; }
-        public int Num_verses { get; set; }
+        public string question { get; set; }
+        public string length { get; set; }
+        public int num_verses { get; set; }
     }
 }
