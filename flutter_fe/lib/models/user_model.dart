@@ -16,7 +16,7 @@ import 'package:flutter_fe/models/post_model.dart';
 class User{
   late String userName;
   late String firstName;
-  String? profilePictureUrl;
+  late String profilePictureUrl;
   late String lastName;
   late String birthDate;
   late bool gender;
@@ -34,7 +34,7 @@ class User{
     this.married,
     this.bios,
     this.religion,
-    this.profilePictureUrl,
+    required this.profilePictureUrl,
     this.posts
   });
 
@@ -88,6 +88,12 @@ class User{
     this.bios = o["bios"] as String;
     this.religion = o["religion"] as String;
     this.profilePictureUrl = o["profilePictureUrl"] as String;
-    this.posts = o["posts"] != null ? List<PostInfo>.from(o["posts"]) : null;
+    // this.posts = o["posts"] != null ? List<PostInfo>.from(o["posts"]) : null;
+    if (o["posts"] != null) {
+      this.posts = List<PostInfo>.from((o["posts"] as List).map((post) => PostInfo.fromJson(post)));
+    } else {
+      this.posts = [];
+    }
+
   }
 }
