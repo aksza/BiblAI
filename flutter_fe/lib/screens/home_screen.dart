@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/models/post_model.dart';
 import 'package:flutter_fe/widgets/custom_bottom_app_bar.dart';
@@ -8,42 +10,63 @@ import 'package:logger/logger.dart';
 import 'package:flutter_fe/utils/request_util.dart';
 // import 'dart:developer' as developer;
 
-RequestUtil util = RequestUtil();
+RequestUtil requestUtil = RequestUtil();
 
 
-class HomeScreen extends StatelessWidget{
+class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
-  const HomeScreen({super.key});
+
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context){
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
-    // var logger = Logger();
-    List<Post> posts = Post.postss;
+class _HomeScreenState extends State<HomeScreen> {
+  final RequestUtil requestUtil = RequestUtil();
+  late List<PostInfo> posts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+  }
+
+  Future<void> fetchPosts() async {
+    var response = await requestUtil.getPost(1);
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      posts = (jsonData as List).map((data) => PostInfo.fromJson(data)).toList();
+      setState(() {}); // Frissítsd a UI-t a bejegyzésekkel
+    } else {
+      Logger().e('Error: ${response.reasonPhrase}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       bottomNavigationBar: const CustomBottomAppBar(),
-        
-body: Container(
-          alignment: Alignment.center,
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Message',
-              style: TextStyle(fontSize: 24),
-            ),
-            // developer.log outside the Text widget
-          // ElevatedButton(
-//             onPressed: () async{
-//               http.Response response = await util.getHome();
-//               logger.d('Response: ${response.body}');
-//               },
-//               child: const Text('api')
-//            ),
-          ],
-        ),
-        ),
+      body: Center(
+        child: posts != null
+            ? Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        return CustomPostView(
+                          post: posts[index],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              )
+            : const CircularProgressIndicator(),
+      ),
     );
   }
 }

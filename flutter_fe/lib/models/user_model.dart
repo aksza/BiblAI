@@ -1,111 +1,93 @@
-import 'dart:ffi';
-
 import 'package:flutter_fe/models/post_model.dart';
 
+// set pOSTS(List<PostInfo>? newPosts){
+//     posts = newPosts;
+//   }
+
+//   void addPost(PostInfo newPost){
+//     if(posts == null){
+//       posts = [newPost];
+//     }
+//     else{
+//       posts!.add(newPost);
+//     }
+//   }
+
 class User{
-  final UserInfo userInfo;
+  late String userName;
+  late String firstName;
+  String? profilePictureUrl;
+  late String lastName;
+  late String birthDate;
+  late bool gender;
+  bool? married;
+  String? bios;
+  String? religion;
   List<PostInfo>? posts;
 
   User({
-    required this.userInfo,
-    this.posts
-  });
-
-  static List<User> users = 
-  [
-    User(
-      userInfo: UserInfo(
-        birthDate: '2002.09.18',
-        userId: 1,
-        userName: 'akszasuciu12',
-        firstName: 'Aksza',
-        lastName: 'Suciu',
-        profilePictureUrl: 'assets/images/aksza.jpeg',
-        email: 'suciuaksza12@gmail.com',
-        password: 'akszavagyok12',
-        gender: true,
-        married: false,
-        bio: 'aksza vagyok sziasztok',
-        religion: 'karizmatikus',
-        posts: null
-      ),
-      posts: null
-    ),
-    User(
-      userInfo: UserInfo(
-        birthDate: '2002.04.28',
-        userId: 2,
-        userName: 'szoverfidani',
-        firstName: 'Dani',
-        lastName: 'Szoverfi',
-        profilePictureUrl: 'assets/images/dani.jpeg',
-        email: 'szoverfidani@gmail.com',
-        password: 'daniprofil123',
-        gender: false,
-        married: true,
-        bio: 'dani vagyok hello',
-        religion: 'reformatus',
-        posts: null
-      ),
-      posts: null
-    ),
-    User(
-      userInfo: UserInfo(
-        birthDate: '2003.06.09',
-        userId: 3,
-        userName: 'peteredeti',
-        firstName: 'Peter',
-        lastName: 'Simon',
-        profilePictureUrl: 'assets/images/peter.jpeg',
-        email: 'petersimon@gmail.com',
-        password: 'peterposztok321',
-        gender: false,
-        married: false,
-        bio: 'peteredeti vok hello',
-        religion: 'presbiterianus',
-        posts: null
-      ),
-      posts: null
-    )
-  ];
-}
-
-class UserInfo{
-  final int userId;
-  String userName;
-  String firstName;
-  String? profilePictureUrl;
-  String lastName;
-  String email;
-  String password;
-  String birthDate;
-  bool gender;
-  bool? married;
-  String? bio;
-  String? religion;
-  List<Post>? posts;
-
-  UserInfo({
-    required this.userId,
     required this.userName,
     required this.firstName,
-    this.profilePictureUrl,
     required this.lastName,
-    required this.email,
-    required this.password,
     required this.birthDate,
     required this.gender,
     this.married,
-    this.bio,
+    this.bios,
     this.religion,
+    this.profilePictureUrl,
     this.posts
   });
 
-  String getUsername(userId){
-    if(userId == this.userId){
-      return userName;
-    }
-    return 'username not found';
+  // String get userNAME => userName;
+  // String get firstNAME => firstName;
+  // String? get profilePictrureURL => profilePictureUrl;
+  // String get lastNAME => lastName; 
+  // String get birthDATE => birthDate;
+  // bool get gENDER => gender;
+  // bool? get mARRIED => married;
+  // String? get bIO => bios;
+  // String? get rELIGION => religion;
+  // List<Post>? get pOSTS => posts;
+
+  set profilePictureURL(String newURL){
+    profilePictureUrl = newURL;
+  }
+
+  set bIO(String? newBio){
+    bios = newBio;
+  }
+  
+  set pOSTS(List<PostInfo>? newPosts){
+    posts = newPosts;
+  }
+
+  Map<String,dynamic> toMap(){
+    var map=<String,dynamic>{};
+    map["userName"] = userName;
+    map["firstName"] = firstName;
+    map["lastName"] = lastName;
+    map["birthDate"] = birthDate;
+    map["gender"] = gender;
+    map["married"] = married;
+    map["bios"] = bios;
+    map["religion"] = religion;
+    map["profilePictureUrl"] = profilePictureUrl;
+    map["posts"] = posts?.map((post) => post.toMap()).toList();
+
+    return map;
+  }
+
+
+  User.fromJson(dynamic o){
+    this.userName = o["userName"] as String;
+    this.firstName = o["firstName"] as String;
+    this.lastName = o["lastName"] as String;
+    this.birthDate = o["birthDate"] as String;
+    this.gender = o["gender"] as bool;
+    this.married = o["married"] as bool?;
+    this.bios = o["bios"] as String;
+    this.religion = o["religion"] as String;
+    this.profilePictureUrl = o["profilePictureUrl"] as String;
+    this.posts = o["posts"] != null ? List<PostInfo>.from(o["posts"]) : null;
   }
 }
-
