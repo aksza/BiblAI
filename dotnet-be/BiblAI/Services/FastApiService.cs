@@ -46,6 +46,7 @@
                 {
                     // Handle the case where the request was not successful
                     Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    return null;
                 }
             }
             catch (Exception ex)
