@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fe/models/post_model.dart';
+import 'package:flutter_fe/models/comment_model.dart';
 import 'package:flutter_fe/models/user_model.dart';
-import 'package:flutter_fe/screens/post_screen.dart';
 import 'package:flutter_fe/screens/profile_screen.dart';
 import 'package:flutter_fe/widgets/dislike_button.dart';
 import 'package:flutter_fe/widgets/like_button.dart';
@@ -9,22 +8,22 @@ import 'package:flutter_fe/utils/request_util.dart';
 import 'package:logger/logger.dart';
 
 //TODO:a dislike nem mukodik jol
-class CustomPostView extends StatefulWidget {  
-  final PostInfo post;
+class CustomCommentView extends StatefulWidget {  
+  final Comment comment;
   final User user;
 
-  const CustomPostView({
+  const CustomCommentView({
     Key? key,
-    required this.post,
+    required this.comment,
     required this.user
   }): super(key:key);
 
 
   @override
-  State<CustomPostView> createState() => _CustomPostView();
+  State<CustomCommentView> createState() => _CustomCommentView();
 }
 
-class _CustomPostView extends State<CustomPostView>{
+class _CustomCommentView extends State<CustomCommentView>{
 
   bool isLiked = false;
   bool isDisliked = false;
@@ -35,10 +34,10 @@ class _CustomPostView extends State<CustomPostView>{
   @override
   void initState(){
     super.initState();
-    isLiked = widget.post.likedByUser;
-    isDisliked = widget.post.dislikedByUser;
-    numLikes = widget.post.numLikes;
-    numLikes = widget.post.numDisLikes;
+    isLiked = widget.comment.likedByUser;
+    isDisliked = widget.comment.dislikedByUser;
+    numLikes = widget.comment.numLikes;
+    numDisLikes = widget.comment.numDisLikes;
   }
 
   //toggle like
@@ -48,7 +47,7 @@ class _CustomPostView extends State<CustomPostView>{
     });
     //access the doc in databse
     if(isDisliked && isLiked){
-      updatePostLike();
+      updateCommentLike();
       setState(() {
         isDisliked = !isDisliked;
         numLikes++;
@@ -56,13 +55,13 @@ class _CustomPostView extends State<CustomPostView>{
       }); 
     }
     else if(isLiked){
-      likePost();
+      likeComment();
       setState(() {
         numLikes++;
       });
     }
     else{
-      unlikePost();
+      unlikeComment();
       setState(() {
         numLikes--;
       });
@@ -75,61 +74,60 @@ class _CustomPostView extends State<CustomPostView>{
     });
     //access the doc in databse
     if(isDisliked && isLiked){
-      updatePostLike();
+      updateCommentLike();
       setState(() {
         isLiked = !isLiked;
-        numDisLikes++;
         numLikes--;
+        numDisLikes++;
       }); 
     }
     else if(isDisliked){
-      dislikePost();
+      dislikeComment();
       setState(() {
         numDisLikes++;
       });
     }
     else{
-      unlikePost();
+      unlikeComment();
       setState(() {
         numDisLikes--;
       });
     }
-
   }
 
-  Future<void> likePost() async {
+  Future<void> likeComment() async {
     try {
     //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.postLikePost(isLiked,2,widget.post.id);
+      await requestUtil.postCommentLike(isLiked,2,widget.comment.id);
 
     } catch (error) {
       Logger().e('Error: $error');
     }
   }
 
-  Future<void> unlikePost() async {
+  Future<void> unlikeComment() async {
     try {
     //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.deletePostUnlike(2,widget.post.id);
+      await requestUtil.deleteCommentUnlike(2,widget.comment.id);
 
     } catch (error) {
       Logger().e('Error: $error');
     }
   }
 
-  Future<void> dislikePost() async {
+  Future<void> dislikeComment() async {
     try {
     //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.postLikePost(!isDisliked,2,widget.post.id);
+      await requestUtil.postCommentLike(!isDisliked,2,widget.comment.id);
 
     } catch (error) {
       Logger().e('Error: $error');
     }
   }
 
-  Future<void> updatePostLike() async{
+  Future<void> updateCommentLike() async{
     try{
-      await requestUtil.putPostUpdateLike(2,widget.post.id);
+      await requestUtil.putCommentUpdateLike(2,widget.comment.id);
     } catch(error){
       Logger().e('Error: $error');
     }
@@ -137,20 +135,12 @@ class _CustomPostView extends State<CustomPostView>{
 
   @override
   Widget build(BuildContext context) {
-    return 
-    GestureDetector( 
-      onTap: (){
-        Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PostScreen(post: widget.post,user: widget.user)),
-                );      
-      },
-      child: Container(
+    return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
       ),
-      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+      margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
       padding: const EdgeInsets.all(20),
       child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,8 +151,8 @@ class _CustomPostView extends State<CustomPostView>{
               onTap: (){
               Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen(userId: widget.post.userId)),
-                      );      
+                        MaterialPageRoute(builder: (context) => ProfileScreen(userId: widget.comment.userId)),
+              );      
             },
             child:
               Align(
@@ -173,7 +163,7 @@ class _CustomPostView extends State<CustomPostView>{
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.contain,
-                      image: NetworkImage(widget.post.profilePictureUrl),
+                      image: NetworkImage(widget.comment.profilePictureUrl),
                     ),
                     shape: BoxShape.circle,
                     color: Colors.white,
@@ -191,21 +181,19 @@ class _CustomPostView extends State<CustomPostView>{
                     onTap: (){
                     Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ProfileScreen(userId: widget.post.userId)),
+                              MaterialPageRoute(builder: (context) => ProfileScreen(userId: widget.comment.userId)),
                             );      
                     },
                     child:
                       Text(
-                        widget.post.userName,
+                        widget.comment.userName,
                         style: TextStyle(
                           color: Colors.grey[500],
                         ),
                       ),
                   ),
                   const SizedBox(height: 10),
-                  Text(widget.post.question),
-                  const SizedBox(height: 10),
-                  Text(widget.post.answer),
+                  Text(widget.comment.content),
                 ],
               ),
             ),
@@ -220,7 +208,6 @@ class _CustomPostView extends State<CustomPostView>{
               isLiked: isLiked,
               onTap: toggleLike
             ),
-
             Text(
               //int.parse(i.toString)
               numLikes.toString(),
@@ -238,17 +225,10 @@ class _CustomPostView extends State<CustomPostView>{
               numDisLikes.toString(),
               style: const TextStyle(color: Colors.black),
             ),
-            const SizedBox(width: 20),
-            const Icon(Icons.comment),
-            Text(
-              widget.post.commentsNum.toString(),
-              style: const TextStyle(color: Colors.black),
-            )
           ],
         ),
       ],
     ),
-  )
-    );
+  );
   }
 }

@@ -31,19 +31,20 @@ class RequestUtil{
       final url = Uri.parse("https://$endpoint/api/Comment/create");
       await http.post(
         url,
-        body: jsonEncode({
-          'content': content,
-          'userId': userId,
-          'postId': postId,
-          'date': date,
-        }),
+        body: jsonEncode(
+          {
+            "content": content,
+            "userId": userId,
+            "postId": postId,
+            "date": date
+          }
+        ),
         headers: {'Content-Type': 'application/json'},
       );
-    }catch(error){
+    } catch(error) {
       Logger().e("Error in postComment: $error");
       rethrow;
     }
-
   }
 
   Future<void> postCommentLike(bool type, int userId, int commentId) async {
@@ -52,9 +53,9 @@ class RequestUtil{
       await http.post(
         url,
         body: jsonEncode({
-          'type': type,
-          'userId': userId,
-          'commentId': commentId,
+          "type": type,
+          "userId": userId,
+          "commentId": commentId,
         }),
         headers: {'Content-Type': 'application/json'},
       );
@@ -108,9 +109,9 @@ class RequestUtil{
       await http.post(
         url,
         body: jsonEncode({
-          'type': type,
-          'userId': userId,
-          'commentId': commentId,
+          "type": type,
+          "userId": userId,
+          "commentId": commentId,
         }),
         headers: {'Content-Type': 'application/json'},
       );
@@ -161,18 +162,44 @@ class RequestUtil{
 
 
 //hogy kell?
-  // Future<void> deleteCommentUnlike(int userId,int commentId) async {
-  //   try{
-  //     final url = Uri.parse("https://$endpoint/api/Comment/unlike");
-  //     await http.delete(url);
-  //   }catch(error){
-  //     Logger().e("Error in deleteCommentUnlike: $error");
-  //     rethrow;
-  //   }
-  // }
+  Future<void> deleteCommentUnlike(int userId,int commentId) async {
+    try{
+      final url = Uri.parse("https://$endpoint/api/Comment/unlike");
+      await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "userId": userId,
+          "commentId": commentId,
+        }),
+      );
+    }catch(error){
+      Logger().e("Error in deleteCommentUnlike: $error");
+      rethrow;
+    }
+  }
 
   //post/unlike
-
+  Future<void> deletePostUnlike(int userId,int postId) async {
+    try{
+      final url = Uri.parse("https://$endpoint/api/Post/unlike");
+      await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "userId": userId,
+          "commentId": postId,
+        }),
+      );
+    }catch(error){
+      Logger().e("Error in deletePosttUnlike: $error");
+      rethrow;
+    }
+  }
 
   //put 
 
@@ -195,7 +222,7 @@ class RequestUtil{
 
   Future<void> putPostUpdateLike(int userId,int postId) async {
     try{
-      final url = Uri.parse("https://$endpoint/api/Comment/update_like");
+      final url = Uri.parse("https://$endpoint/api/Post/update_like");
       await http.put(
         url,
         body: jsonEncode({
@@ -209,9 +236,4 @@ class RequestUtil{
       rethrow;
     }
   }
-
-
-  // Future<http.Response> getUserPosts(userId) {
-  //   return http.get(Uri.parse("${endpoint}profile/{$userId}/posts"));
-  // }
 }
