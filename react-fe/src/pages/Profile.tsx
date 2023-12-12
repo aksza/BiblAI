@@ -48,7 +48,7 @@ export const Profile = () => {
       </div>
       <div className="user_posts">
         {user.posts?.map((post: PostType) => (
-          <Post key={post.question} {...post} />
+          post.anonym ? <Post key={post.question} post = {post} handleLike={() => {}} handleCommentLike={() => {}} handleComment={() => {}} /> : <></>
         ))}
       </div>
     </div>

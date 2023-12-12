@@ -90,6 +90,34 @@ export const registerUser = async (data: RegisterFormModel) => {
     }
 }
 
+export const askQuestion = async (question: string, length: string, num_verses: number) => {
+    try {
+        const response = await axiosPost(`${process.env.REACT_APP_API_URL}/Post/get_answer`, {
+            question: question,
+            length: length,
+            num_verses: num_verses,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const postCreate = async (question: string, answer: string, anonym: boolean, userId: number, date: string) => {
+    try {
+        const response = await axiosPost(`${process.env.REACT_APP_API_URL}/Post/create`, {
+            question: question,
+            answer: answer,
+            anonym: anonym,
+            userId: userId,
+            date: date,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
 // TODO PUT REQUESTS
 
 export const updateLike = async (userId: number, postId: number) => {

@@ -1,12 +1,6 @@
 import { Comment } from "./CommentModel";
 import { Verse } from "./VerseModel";
 
-export interface Posts {
-    userName: string;
-    userId: number;
-    posts: Post[];
-}
-
 export interface Post {
     id: number;
     question: string;
@@ -22,5 +16,5 @@ export interface Post {
     numDislikes: number;
     postHashtag: Verse[];
     likedByUser: boolean;
-    dislikedByUser: number;
+    dislikedByUser: boolean;
 }
