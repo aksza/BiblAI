@@ -6,6 +6,9 @@ import {Profile} from './pages/Profile';
 import {Header} from './components/Header';
 import '../src/styles/app.css';
 import Login from './pages/Login';
+import { Register } from './pages/Register';
+import { Question } from './pages/Question';
+import { Answer } from './pages/Answer';
 
 function App() {
 
@@ -24,9 +27,12 @@ function App() {
         <Router>
           <Header />
           <Routes>
-            <Route path="/home" element={<Home />} />
+            <Route path="/home/:userId" element={<Home />} />
             <Route path="/profile/:userId" element={<Profile />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/question" element={<Question />} /> 
+            <Route path="/answer" element={<Answer />} />
           </Routes>
         </Router>
       </QueryClientProvider>

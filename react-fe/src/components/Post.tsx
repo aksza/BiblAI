@@ -1,36 +1,33 @@
-import {Ppost, Uuser} from '../pages/Home'
+import { Post as PostType} from '../../models/PostModel'
+import { Users } from '../../models/UserModel'
 import {Link} from 'react-router-dom';
 import '../styles/post_card.css'
 import '../styles/comment.css'
 import React, { useState } from 'react';
-import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogTitle, setRef } from '@mui/material';
 import { PostCard } from './PostCard';
 import { CommentSection } from './CommentSection';
 
-
-
 interface PostProps {
-  post: Ppost;
-}
+    post: PostType;
+    handleLike : (postId : number, like: number, dislike: number) => void;
+    handleCommentLike : (postId : number, commentId : number, like: number, dislike: number) => void;
+    handleComment : (postId : number, comment : string) => void;
+  }
 
-interface UserProps {
-  user: Uuser;
-}
 
-
-export const Post: React.FC<PostProps> = ({ post }) => {
+export const Post: React.FC<PostProps> = ({post, handleLike, handleCommentLike, handleComment}) => {
   const [postModalOpen, setPostModalOpen] = useState(false);
-  const handlePostModalOpen = () => setPostModalOpen(true);
+  const handlePostModalOpen = () => setPostModalOpen(true)
   const handlePostModalClose = () => setPostModalOpen(false);
 
   return (
     <div className="Post">
-      <PostCard post={post} handlePostModalOpen={handlePostModalOpen} />
+      <PostCard post={post} handlePostModalOpen={handlePostModalOpen} handleLike={handleLike} />
       <Dialog open={postModalOpen} onClose={handlePostModalClose} maxWidth="md" fullWidth>
-        <DialogTitle>{post.question}</DialogTitle>
         <DialogContent>
-          <PostCard post={post} handlePostModalOpen={handlePostModalOpen} />
-          <CommentSection post={post} />
+          <PostCard post={post} handlePostModalOpen={handlePostModalOpen} handleLike={handleLike}/>
+          <CommentSection post={post} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
         </DialogContent>
       </Dialog>
     </div>

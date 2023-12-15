@@ -96,4 +96,34 @@ namespace BiblAI.Helper
             return _userRepository.GetUserById(source.UserId).UserName;
         }
     }
+
+    public class UserPictureResolver : IValueResolver<Post, PostDto, string>
+    {
+        private readonly IUserRepository _userRepository;
+
+        public UserPictureResolver(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public string Resolve(Post source, PostDto destination, string destMember, ResolutionContext context)
+        {
+            return _userRepository.GetUserById(source.UserId).ProfilePictureUrl;
+        }
+    }
+
+    public class UserPictureResolver2 : IValueResolver<Comment, CommentDto, string>
+    {
+        private readonly IUserRepository _userRepository;
+
+        public UserPictureResolver2(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public string Resolve(Comment source, CommentDto destination, string destMember, ResolutionContext context)
+        {
+            return _userRepository.GetUserById(source.UserId).ProfilePictureUrl;
+        }
+    }
 }

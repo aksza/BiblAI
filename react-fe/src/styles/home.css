@@ -1,0 +1,14 @@
+.Home {
+    border: 2px solid black;
+    width: 100%;
+    height: 100%;
+}
+
+.Home > div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

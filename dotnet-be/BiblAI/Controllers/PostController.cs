@@ -3,6 +3,7 @@ using BiblAI.Dto;
 using BiblAI.Interfaces;
 using BiblAI.Models;
 using BiblAI.Repository;
+using BiblAI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BiblAI.Controllers
@@ -14,26 +15,47 @@ namespace BiblAI.Controllers
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILikeRepository _likeRepository;
+        private readonly FastApiService _fastApiService;
         private readonly IMapper _mapper;
 
-        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper)
+        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper, FastApiService fastApiService)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _likeRepository = likeRepository;
             _mapper = mapper;
+            _fastApiService = fastApiService;
         }
 
-        [HttpGet]
-        public IActionResult GetPosts() {
+        [HttpGet("{userId}")]
+        public IActionResult GetPosts(int userId) {
             var posts = _postRepository.GetPosts();
             var postDtos = _mapper.Map<List<PostDto>>(posts);
+            foreach(var post in postDtos)
+            {
+                post.LikedByUser = _likeRepository.PostLikedByUser(userId, post.Id);
+                post.DislikedByUser = _likeRepository.PostDislikedByUser(userId, post.Id);
+                foreach(var comment in post.Comments)
+                {
+                    comment.LikedByUser = _likeRepository.CommentLikedByUser(userId, comment.Id);
+                    comment.DislikedByUser = _likeRepository.CommentDislikedByUser(userId, comment.Id);
+                }
+            }
 
             return Ok(postDtos);
         }
 
+        [HttpPost("get_answer")]
+        public async Task<IActionResult> CreateAnswer([FromBody] AiQuestion question)
+        {
+            AiAnswer answer = await _fastApiService.GetAnswer(question);
+
+            // Handle the result as needed
+            return Ok(answer);
+        } 
+
         [HttpPost("create")]
-        public IActionResult CreateUser([FromBody] PostCreateDto postDto)
+        public IActionResult CreatePost([FromBody] PostCreateDto postDto)
         {
             if (postDto == null)
                 return BadRequest(ModelState);

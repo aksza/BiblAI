@@ -3,8 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
-BiblAI\appsettings.json
-BiblAI\appsettings.Development.json
+
+BiblAI/appsettings.Development.json
+BiblAI/appsettings.json
 
 # User-specific files
 *.rsuser

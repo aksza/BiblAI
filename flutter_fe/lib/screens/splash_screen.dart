@@ -1,6 +1,8 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:flutter_fe/auth/login_or_register.dart';
+import 'package:flutter_fe/utils/request_util.dart';
 import 'home_screen.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 
