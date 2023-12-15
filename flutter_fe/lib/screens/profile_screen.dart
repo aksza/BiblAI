@@ -9,8 +9,9 @@ import 'package:logger/logger.dart';
 
 class ProfileScreen extends StatefulWidget{
   static const routeName = '/profile';
+  final int userId;
 
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, required this.userId});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -28,13 +29,13 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
    Future<void> fetchUser() async {
-    var response = await requestUtil.getUser(2);
+    var response = await requestUtil.getUser(widget.userId);
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
       user =  User.fromJson(jsonData);
       Logger().i(user.profilePictureUrl);
-      setState(() {}); // Frissítsd a UI-t a userrel
+      setState(() {}); // update
     } else {
       Logger().e('Error: ${response.reasonPhrase}');
     }
@@ -68,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           Text(
             user.userName,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize:16
               ),
           ),
@@ -85,13 +86,14 @@ class _ProfileScreenState extends State<ProfileScreen>
 
 
           //user posts
-          Container(
-            height: 400, // Set a fixed height or use other constraints
+          SizedBox(
+            height: 320, // Set a fixed height or use other constraints
             child: ListView.builder(
               itemCount: user.posts?.length,
               itemBuilder: (context, index) {
                 return CustomPostView(
                   post: user.posts![index],
+                  user: user,
                 );
               },
             ),
