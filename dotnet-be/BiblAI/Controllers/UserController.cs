@@ -1,8 +1,15 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using BiblAI.Dto;
 using BiblAI.Interfaces;
 using BiblAI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace BiblAI.Controllers
 {
@@ -11,15 +18,17 @@ namespace BiblAI.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserRepository userRepository, IMapper mapper, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _configuration = configuration; 
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userId}"), Authorize]
         public IActionResult GetUserById(int userId) {
             var user = _mapper.Map<UserDto>(_userRepository.GetUserById(userId));
             return Ok(user);
@@ -31,9 +40,7 @@ namespace BiblAI.Controllers
             if (userDto == null)
                 return BadRequest(ModelState);
 
-            var user = _userRepository.GetUsers()
-                .Where(c => c.UserName.Trim().ToUpper() == userDto.UserName.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            var user = _userRepository.GetUserByUserName(userDto.UserName);
 
             if (user != null)
             {
@@ -45,6 +52,10 @@ namespace BiblAI.Controllers
                 return BadRequest(ModelState);
 
             var userMap = _mapper.Map<User>(userDto);
+            CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            userMap.PasswordHash = passwordHash;
+            userMap.PasswordSalt = passwordSalt;
 
             if (!_userRepository.CreateUser(userMap))
             {
@@ -53,6 +64,67 @@ namespace BiblAI.Controllers
             }
 
             return Ok("Successfully created");
+        }
+        
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login(UserLoginDto request)
+        {
+            User user = _userRepository.GetUserByUserName(request.UserName);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                return BadRequest("Wrong password.");
+            }
+
+            string token = CreateToken(user);
+
+            //var refreshToken = GenerateRefreshToken();
+            //SetRefreshToken(refreshToken);
+
+            return Ok(token);
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Uri, user.ProfilePictureUrl)
+            };
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using var hmac = new HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+        }
+
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using var hmac = new HMACSHA512(passwordSalt);
+            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            return computedHash.SequenceEqual(passwordHash);
+            
         }
     }
 }

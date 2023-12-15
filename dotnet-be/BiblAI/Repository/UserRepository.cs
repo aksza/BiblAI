@@ -33,6 +33,11 @@ namespace BiblAI.Repository
                 .FirstOrDefault();
         }
 
+        public User GetUserByUserName(string userName)
+        {
+            return _context.Users.Where(u => u.UserName == userName).FirstOrDefault();
+        }
+
         public ICollection<User> GetUsers()
         {
             return _context.Users.ToList();

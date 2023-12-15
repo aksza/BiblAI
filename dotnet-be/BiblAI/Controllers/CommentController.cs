@@ -3,12 +3,14 @@ using BiblAI.Dto;
 using BiblAI.Interfaces;
 using BiblAI.Models;
 using BiblAI.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BiblAI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CommentController : Controller
     {
         private readonly ICommentRepository _commentRepository;
@@ -35,8 +37,6 @@ namespace BiblAI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var comment = _mapper.Map<Comment>(commentDto);
-            comment.Post = _postRepository.GetPostById(commentDto.PostId);
-            comment.User = _userRepository.GetUserById(commentDto.UserId);
 
             if (!_commentRepository.CreateComment(comment))
             {
@@ -80,9 +80,7 @@ namespace BiblAI.Controllers
             if (likeDto == null)
                 return BadRequest(ModelState);
 
-            var like = _likeRepository.GetLikes()
-                .Where(l => l.UserId == likeDto.UserId && (l.CommentId != null && l.CommentId == likeDto.CommentId))
-                .FirstOrDefault();
+            var like = _likeRepository.GetCommentLikeByIds(likeDto.UserId, likeDto.CommentId);
 
             if (like != null)
             {
@@ -93,8 +91,7 @@ namespace BiblAI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var likeMap = _mapper.Map<Like>(likeDto);
-            likeMap.User = _userRepository.GetUserById(likeDto.UserId);
-            likeMap.Comment = _commentRepository.GetCommentById(likeDto.CommentId);
+            likeMap.CommentId = likeDto.CommentId;
 
             if (!_likeRepository.Like(likeMap))
             {

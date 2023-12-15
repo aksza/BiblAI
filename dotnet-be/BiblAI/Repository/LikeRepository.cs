@@ -16,12 +16,12 @@ namespace BiblAI.Repository
 
         public bool CommentDislikedByUser(int userId, int commentId)
         {
-            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == true);
+            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == false);
         }
 
         public bool CommentLikedByUser(int userId, int commentId)
         {
-            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == false);
+            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == true);
         }
 
         public bool CommentLikeExists(int userId, int commentId)

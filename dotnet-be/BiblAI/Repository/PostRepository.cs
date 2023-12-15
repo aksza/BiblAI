@@ -42,6 +42,11 @@ namespace BiblAI.Repository
             return saved > 0;
         }
 
+        public ICollection<Post> SearchPosts(string search)
+        {
+            return _context.Posts.Where(p => p.Question.ToUpper().Contains(search.ToUpper())).Include(p => p.Comments).ToList();
+        }
+
         public bool UpdatePost(Post post)
         {
             _context.Update(post);

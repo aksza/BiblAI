@@ -4,48 +4,79 @@ using BiblAI.Interfaces;
 using BiblAI.Models;
 using BiblAI.Repository;
 using BiblAI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BiblAI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PostController : Controller
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILikeRepository _likeRepository;
+        private readonly ICommentRepository _commentRepository;
         private readonly FastApiService _fastApiService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper, FastApiService fastApiService)
+        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper, FastApiService fastApiService, ICommentRepository commentRepository, IHttpContextAccessor httpContextAccessor)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _likeRepository = likeRepository;
             _mapper = mapper;
             _fastApiService = fastApiService;
+            _commentRepository = commentRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet("{userId}")]
-        public IActionResult GetPosts(int userId) {
+        [HttpGet("public")]
+        [AllowAnonymous]
+        public IActionResult GetPosts() {
             var posts = _postRepository.GetPosts();
             var postDtos = _mapper.Map<List<PostDto>>(posts);
-            foreach(var post in postDtos)
-            {
-                post.LikedByUser = _likeRepository.PostLikedByUser(userId, post.Id);
-                post.DislikedByUser = _likeRepository.PostDislikedByUser(userId, post.Id);
-                foreach(var comment in post.Comments)
-                {
-                    comment.LikedByUser = _likeRepository.CommentLikedByUser(userId, comment.Id);
-                    comment.DislikedByUser = _likeRepository.CommentDislikedByUser(userId, comment.Id);
-                }
-            }
 
             return Ok(postDtos);
         }
 
+        [HttpGet("private")]
+        public IActionResult GetPostsWithUser()
+        {
+            var posts = _postRepository.GetPosts();
+            var postDtos = _mapper.Map<List<PostDto>>(posts);
+            var userString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int.TryParse(userString, out int userId);
+            var userName = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+            var userPicture = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Uri);
+
+            var response = new
+            {
+                UserId = userId,
+                UserName = userName,
+                ProfilePictureUrl = userPicture,
+                Posts = postDtos
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet("{search}")]
+        [AllowAnonymous]
+        public IActionResult GetPosts(string search)
+        {
+            var posts = _postRepository.SearchPosts(search);
+            var postDtos = _mapper.Map<List<PostDto>>(posts);
+
+            return Ok(postDtos);
+        }
+
+
         [HttpPost("get_answer")]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateAnswer([FromBody] AiQuestion question)
         {
             AiAnswer answer = await _fastApiService.GetAnswer(question);
@@ -63,13 +94,22 @@ namespace BiblAI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var postMap = _mapper.Map<Post>(postDto);
-            postMap.User = _userRepository.GetUserById(postDto.UserId);
 
             if (!_postRepository.CreatePost(postMap))
             {
-                ModelState.AddModelError("", "Something went wrong while savin");
+                ModelState.AddModelError("", "Something went wrong while saving post");
                 return StatusCode(500, ModelState);
             }
+
+            var commentMap = _mapper.Map<Comment>(postDto);
+            commentMap.PostId = postMap.Id;
+
+            if (!_commentRepository.CreateComment(commentMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving comment");
+                return StatusCode(500, ModelState);
+            }
+
 
             return Ok("Successfully created");
         }
@@ -80,9 +120,7 @@ namespace BiblAI.Controllers
             if (likeDto == null)
                 return BadRequest(ModelState);
 
-            var like = _likeRepository.GetLikes()
-                .Where(l => l.UserId == likeDto.UserId && (l.PostId != null && l.PostId == likeDto.CommentId))
-                .FirstOrDefault();
+            var like = _likeRepository.GetPostLikeByIds(likeDto.UserId, likeDto.CommentId);
 
             if (like != null)
             {
@@ -93,8 +131,7 @@ namespace BiblAI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var likeMap = _mapper.Map<Like>(likeDto);
-            likeMap.User = _userRepository.GetUserById(likeDto.UserId);
-            likeMap.Post = _postRepository.GetPostById(likeDto.CommentId);
+            likeMap.PostId = likeDto.CommentId;
 
             if (!_likeRepository.Like(likeMap))
             {
