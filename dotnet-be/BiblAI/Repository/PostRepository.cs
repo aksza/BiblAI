@@ -14,43 +14,42 @@ namespace BiblAI.Repository
             _context = context;
         }
 
-        public bool CreatePost(Post post)
+        public async Task<bool> CreatePost(Post post)
         {
             _context.Add(post);
-            return Save();
+            return await Save();
         }
 
-        public bool DeletePost(Post post)
+        public async Task<bool> DeletePost(Post post)
         {
             _context.Remove(post);
-            return Save();
+            return await Save();
         }
 
-        public Post GetPostById(int id)
+        public async Task<Post> GetPostById(int id)
         {
-            return _context.Posts.FirstOrDefault(p => p.Id == id);
+            return await _context.Posts.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public ICollection<Post> GetPosts()
+        public async Task<ICollection<Post>> GetPosts()
         {
-            return _context.Posts.Include(p => p.Comments).ToList();
+            return await _context.Posts.Include(p => p.Comments).ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0;
+            return (await _context.SaveChangesAsync()) > 0;
         }
 
-        public ICollection<Post> SearchPosts(string search)
+        public async Task<ICollection<Post>> SearchPosts(string search)
         {
-            return _context.Posts.Where(p => p.Question.ToUpper().Contains(search.ToUpper())).Include(p => p.Comments).ToList();
+            return await _context.Posts.Where(p => p.Question.ToUpper().Contains(search.ToUpper())).Include(p => p.Comments).ToListAsync();
         }
 
-        public bool UpdatePost(Post post)
+        public async Task<bool> UpdatePost(Post post)
         {
             _context.Update(post);
-            return Save();
+            return await Save();
         }
     }
 }

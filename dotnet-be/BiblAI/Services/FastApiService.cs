@@ -23,20 +23,15 @@
             {
                 var url = "http://127.0.0.1:7070/get-answer";
 
-                // Convert questionRequest to JSON
                 var jsonPayload = JsonConvert.SerializeObject(questionRequest);
                 
-                // Convert JSON payload to StringContent
                 var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-                // Make a POST request to the FastAPI endpoint
                 var response = await _httpClient.PostAsync(url, content);
                 
 
-                // Check if the request was successful (status code 200-299)
                 if (response.IsSuccessStatusCode)
                 {
-                    // Read and deserialize the JSON response
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     var answer = JsonConvert.DeserializeObject<AiAnswer>(jsonResponse);
                     
@@ -44,16 +39,13 @@
                 }
                 else
                 {
-                    // Handle the case where the request was not successful
-                    Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
                     return null;
                 }
             }
             catch (Exception ex)
             {
                 // Handle exceptions
-                Console.WriteLine($"Exception: {ex.Message}");
-                return null;
+                throw;
             }
         }
     }

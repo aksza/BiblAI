@@ -14,45 +14,45 @@ namespace BiblAI.Repository
             _context = context;
         }
 
-        public bool CreateUser(User user)
+        public async Task<bool> CreateUser(User user)
         {
             _context.Add(user);
-            return Save();
+            return await Save();
         }
 
-        public bool DeleteUser(User user)
+        public async Task<bool> DeleteUser(User user)
         {
             _context.Remove(user);
-            return Save();
+            return await Save();
         }
 
-        public User GetUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
-            return _context.Users.Where(u => u.Id == id)
+            return await _context.Users.Where(u => u.Id == id)
                 .Include(u => u.Posts).ThenInclude(p => p.Comments)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
-        public User GetUserByUserName(string userName)
+        public async Task<User> GetUserByUserName(string userName)
         {
-            return _context.Users.Where(u => u.UserName == userName).FirstOrDefault();
+            return await _context.Users.Where(u => u.UserName == userName).FirstOrDefaultAsync();
         }
 
-        public ICollection<User> GetUsers()
+        public async Task<ICollection<User>> GetUsers()
         {
-            return _context.Users.ToList();
+            return await _context.Users.ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
 
-        public bool UpdateUser(User user)
+        public async Task<bool> UpdateUser(User user)
         {
             _context.Update(user);
-            return Save();
+            return await Save();
         }
     }
 }

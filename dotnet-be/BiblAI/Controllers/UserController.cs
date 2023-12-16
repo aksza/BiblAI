@@ -29,63 +29,85 @@ namespace BiblAI.Controllers
         }
 
         [HttpGet("{userId}"), Authorize]
-        public IActionResult GetUserById(int userId) {
-            var user = _mapper.Map<UserDto>(_userRepository.GetUserById(userId));
-            return Ok(user);
+        public async Task<IActionResult> GetUserById(int userId) 
+        {
+            try
+            {
+                var user = _mapper.Map<UserDto>(await _userRepository.GetUserById(userId));
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("create")]
-        public IActionResult CreateUser([FromBody] UserCreateDto userDto)
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto userDto)
         {
-            if (userDto == null)
-                return BadRequest(ModelState);
-
-            var user = _userRepository.GetUserByUserName(userDto.UserName);
-
-            if (user != null)
+            try
             {
-                ModelState.AddModelError("", "User already exists");
-                return StatusCode(422, ModelState);
+                if (userDto == null)
+                    return BadRequest(ModelState);
+
+                var user = await _userRepository.GetUserByUserName(userDto.UserName);
+
+                if (user != null)
+                {
+                    ModelState.AddModelError("", "User already exists");
+                    return StatusCode(422, ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var userMap = _mapper.Map<User>(userDto);
+                CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                userMap.PasswordHash = passwordHash;
+                userMap.PasswordSalt = passwordSalt;
+
+                if (!await _userRepository.CreateUser(userMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while savin");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok("Successfully created");
             }
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userMap = _mapper.Map<User>(userDto);
-            CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            userMap.PasswordHash = passwordHash;
-            userMap.PasswordSalt = passwordSalt;
-
-            if (!_userRepository.CreateUser(userMap))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong while savin");
-                return StatusCode(500, ModelState);
+                return StatusCode(500, ex.Message);
             }
-
-            return Ok("Successfully created");
         }
         
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserLoginDto request)
         {
-            User user = _userRepository.GetUserByUserName(request.UserName);
-            if (user == null)
+            try
             {
-                return BadRequest("User not found.");
-            }
+                User user = await _userRepository.GetUserByUserName(request.UserName);
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
 
-            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+                if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+                {
+                    return BadRequest("Wrong password.");
+                }
+
+                string token = CreateToken(user);
+
+                //var refreshToken = GenerateRefreshToken();
+                //SetRefreshToken(refreshToken);
+
+                return Ok(token);
+            }
+            catch (Exception ex)
             {
-                return BadRequest("Wrong password.");
+                return StatusCode(500, ex.Message);
             }
-
-            string token = CreateToken(user);
-
-            //var refreshToken = GenerateRefreshToken();
-            //SetRefreshToken(refreshToken);
-
-            return Ok(token);
         }
 
         private string CreateToken(User user)

@@ -17,7 +17,7 @@ namespace BiblAI.Helper
 
         public int Resolve(Comment source, CommentDto destination, int destMember, ResolutionContext context)
         {
-            return _likeRepository.GetCommentDislikes(source.Id);
+            return _likeRepository.GetCommentDislikes(source.Id).GetAwaiter().GetResult();
         }
     }
 
@@ -32,7 +32,7 @@ namespace BiblAI.Helper
 
         public int Resolve(Comment source, CommentDto destination, int destMember, ResolutionContext context)
         {
-            return _likeRepository.GetCommentLikes(source.Id);
+            return _likeRepository.GetCommentLikes(source.Id).GetAwaiter().GetResult();
         }
     }
 
@@ -47,8 +47,7 @@ namespace BiblAI.Helper
 
         public int Resolve(Post source, PostDto destination, int destMember, ResolutionContext context)
         {
-            // Use your like repository to get the number of likes for the post
-            return _likeRepository.GetPostDislikes(source.Id);
+            return _likeRepository.GetPostDislikes(source.Id).GetAwaiter().GetResult();
         }
     }
 
@@ -63,8 +62,7 @@ namespace BiblAI.Helper
 
         public int Resolve(Post source, PostDto destination, int destMember, ResolutionContext context)
         {
-            // Use your like repository to get the number of likes for the post
-            return _likeRepository.GetPostLikes(source.Id);
+            return _likeRepository.GetPostLikes(source.Id).GetAwaiter().GetResult();
         }
     }
 
@@ -79,7 +77,7 @@ namespace BiblAI.Helper
 
         public string Resolve(Post source, PostDto destination, string destMember, ResolutionContext context)
         {
-            return _userRepository.GetUserById(source.UserId).UserName;
+            return _userRepository.GetUserById(source.UserId).GetAwaiter().GetResult().UserName;
         }
     }
 
@@ -94,7 +92,7 @@ namespace BiblAI.Helper
 
         public string Resolve(Comment source, CommentDto destination, string destMember, ResolutionContext context)
         {
-            return _userRepository.GetUserById(source.UserId).UserName;
+            return _userRepository.GetUserById(source.UserId).GetAwaiter().GetResult().UserName;
         }
     }
 
@@ -109,7 +107,7 @@ namespace BiblAI.Helper
 
         public string Resolve(Post source, PostDto destination, string destMember, ResolutionContext context)
         {
-            return _userRepository.GetUserById(source.UserId).ProfilePictureUrl;
+            return _userRepository.GetUserById(source.UserId).GetAwaiter().GetResult().ProfilePictureUrl;
         }
     }
 
@@ -124,7 +122,7 @@ namespace BiblAI.Helper
 
         public string Resolve(Comment source, CommentDto destination, string destMember, ResolutionContext context)
         {
-            return _userRepository.GetUserById(source.UserId).ProfilePictureUrl;
+            return _userRepository.GetUserById(source.UserId).GetAwaiter().GetResult().ProfilePictureUrl;
         }
     }
 
@@ -147,7 +145,7 @@ namespace BiblAI.Helper
                 {
                     var userString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (int.TryParse(userString, out int userId))
-                        return _likeRepository.CommentLikedByUser(userId, source.Id);
+                        return _likeRepository.CommentLikedByUser(userId, source.Id).GetAwaiter().GetResult();
                 }
             }
             return false;
@@ -173,7 +171,7 @@ namespace BiblAI.Helper
                 {
                     var userString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (int.TryParse(userString, out int userId))
-                        return _likeRepository.CommentDislikedByUser(userId, source.Id);
+                        return _likeRepository.CommentDislikedByUser(userId, source.Id).GetAwaiter().GetResult();
                 }
             }
             return false;
@@ -199,7 +197,7 @@ namespace BiblAI.Helper
                 {
                     var userString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (int.TryParse(userString, out int userId))
-                        return _likeRepository.PostLikedByUser(userId, source.Id);
+                        return _likeRepository.PostLikedByUser(userId, source.Id).GetAwaiter().GetResult();
                 }
             }
             return false;
@@ -225,7 +223,7 @@ namespace BiblAI.Helper
                 {
                     var userString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (int.TryParse(userString, out int userId))
-                        return _likeRepository.PostDislikedByUser(userId, source.Id);
+                        return _likeRepository.PostDislikedByUser(userId, source.Id).GetAwaiter().GetResult();
                 }
             }
             return false;

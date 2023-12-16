@@ -1,6 +1,7 @@
 ﻿using BiblAI.Data;
 using BiblAI.Interfaces;
 using BiblAI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiblAI.Repository
 {
@@ -12,32 +13,31 @@ namespace BiblAI.Repository
             _context = context;
         }
 
-        public bool CommentExists(int id)
+        public async Task<bool> CommentExists(int id)
         {
-            return _context.Comments.Any(c => c.Id == id);
+            return await _context.Comments.AnyAsync(c => c.Id == id);
         }
 
-        public bool CreateComment(Comment comment)
+        public async Task<bool> CreateComment(Comment comment)
         {
             _context.Add(comment);
-            return Save();
+            return await Save();
         }
 
-        public bool DeleteComment(Comment comment)
+        public async Task<bool> DeleteComment(Comment comment)
         {
             _context.Remove(comment);
-            return Save();
+            return await Save();
         }
 
-        public Comment GetCommentById(int id)
+        public async Task<Comment> GetCommentById(int id)
         {
-            return _context.Comments.FirstOrDefault(c => c.Id == id);
+            return await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0;
+            return (await _context.SaveChangesAsync()) > 0;
         }
     }
 }

@@ -14,104 +14,103 @@ namespace BiblAI.Repository
             _context = context;
         }
 
-        public bool CommentDislikedByUser(int userId, int commentId)
+        public async Task<bool> CommentDislikedByUser(int userId, int commentId)
         {
-            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == false);
+            return await _context.Likes.AnyAsync(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == false);
         }
 
-        public bool CommentLikedByUser(int userId, int commentId)
+        public async Task<bool> CommentLikedByUser(int userId, int commentId)
         {
-            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == true);
+            return await _context.Likes.AnyAsync(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId) && l.Type == true);
         }
 
-        public bool CommentLikeExists(int userId, int commentId)
+        public async Task<bool> CommentLikeExists(int userId, int commentId)
         {
-            return _context.Likes.Any(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId));
+            return await _context.Likes.AnyAsync(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId));
         }
 
-        public bool DeleteCommentLikes(ICollection<Like> likes)
+        public async Task<bool> DeleteCommentLikes(ICollection<Like> likes)
         {
             _context.RemoveRange(likes);
-            return Save();
+            return await Save();
         }
 
-        public int GetCommentDislikes(int commentId)
+        public async Task<int> GetCommentDislikes(int commentId)
         {
-            return _context.Likes.Count(l => l.Type == false && l.CommentId == commentId);
+            return await _context.Likes.CountAsync(l => l.Type == false && l.CommentId == commentId);
         }
 
-        public Like GetCommentLikeByIds(int userId, int commentId)
+        public async Task<Like> GetCommentLikeByIds(int userId, int commentId)
         {
-            return _context.Likes.Where(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId)).FirstOrDefault();
+            return await _context.Likes.Where(l => l.UserId == userId && (l.CommentId != null && l.CommentId == commentId)).FirstOrDefaultAsync();
         }
 
-        public int GetCommentLikes(int commentId)
+        public async Task<int> GetCommentLikes(int commentId)
         {
-            return _context.Likes.Count(l => l.Type == true && l.CommentId == commentId);
+            return await _context.Likes.CountAsync(l => l.Type == true && l.CommentId == commentId);
         }
 
-        public ICollection<Like> GetLikes()
+        public async Task<ICollection<Like>> GetLikes()
         {
-            return _context.Likes.ToList();
+            return await _context.Likes.ToListAsync();
         }
 
-        public ICollection<Like> GetLikesByCommentId(int commentId)
+        public async Task<ICollection<Like>> GetLikesByCommentId(int commentId)
         {
-            return _context.Likes.Where(l => l.CommentId != null && l.CommentId == commentId).ToList();
+            return await _context.Likes.Where(l => l.CommentId != null && l.CommentId == commentId).ToListAsync();
         }
 
-        public int GetPostDislikes(int postId)
+        public async Task<int> GetPostDislikes(int postId)
         {
-            return _context.Likes.Count(l => l.Type == false && l.PostId == postId);
+            return await _context.Likes.CountAsync(l => l.Type == false && l.PostId == postId);
         }
 
-        public Like GetPostLikeByIds(int userId, int commentId)
+        public async Task<Like> GetPostLikeByIds(int userId, int commentId)
         {
-            return _context.Likes.Where(l => l.UserId == userId && (l.PostId != null && l.PostId == commentId)).FirstOrDefault();
+            return await _context.Likes.Where(l => l.UserId == userId && (l.PostId != null && l.PostId == commentId)).FirstOrDefaultAsync();
         }
 
-        public int GetPostLikes(int postId)
+        public async Task<int> GetPostLikes(int postId)
         {
-            return _context.Likes.Count(l => l.Type == true && l.PostId == postId);
+            return await _context.Likes.CountAsync(l => l.Type == true && l.PostId == postId);
         }
 
-        public bool Like(Like like)
+        public async Task<bool> Like(Like like)
         {
             _context.Add(like);
-            return Save();
+            return await Save();
         }
 
-        public bool PostDislikedByUser(int userId, int postId)
+        public async Task<bool> PostDislikedByUser(int userId, int postId)
         {
-            return _context.Likes.Any(l => l.UserId == userId && (l.PostId != null && l.PostId == postId) && l.Type == false);
+            return await _context.Likes.AnyAsync(l => l.UserId == userId && (l.PostId != null && l.PostId == postId) && l.Type == false);
         }
 
-        public bool PostLikedByUser(int userId, int postId)
+        public async Task<bool> PostLikedByUser(int userId, int postId)
         {
-            return _context.Likes.Any(l => l.UserId == userId && (l.PostId != null && l.PostId == postId) && l.Type == true);
+            return await _context.Likes.AnyAsync(l => l.UserId == userId && (l.PostId != null && l.PostId == postId) && l.Type == true);
         }
 
-        public bool PostLikeExists(int userId, int commentId)
+        public async Task<bool> PostLikeExists(int userId, int commentId)
         {
-            return _context.Likes.Any(l => l.UserId == userId && (l.PostId != null && l.PostId == commentId));
+            return await _context.Likes.AnyAsync(l => l.UserId == userId && (l.PostId != null && l.PostId == commentId));
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
-            return saved > 0;
+            return (await _context.SaveChangesAsync()) > 0;
         }
 
-        public bool Unlike(Like like)
+        public async Task<bool> Unlike(Like like)
         {
             _context.Remove(like);
-            return Save();
+            return await Save();
         }
 
-        public bool UpdateLike(Like like)
+        public async Task<bool> UpdateLike(Like like)
         {
             _context.Update(like);
-            return Save();
+            return await Save();
         }
     }
 }

@@ -29,121 +29,155 @@ namespace BiblAI.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult CreateComment([FromBody] CommentCreateDto commentDto)
+        public async Task<IActionResult> CreateComment([FromBody] CommentCreateDto commentDto)
         {
-            if (commentDto == null)
-                return BadRequest(ModelState);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var comment = _mapper.Map<Comment>(commentDto);
-
-            if (!_commentRepository.CreateComment(comment))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
+                if (commentDto == null)
+                    return BadRequest(ModelState);
 
-            return Ok("Successfully created");
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var comment = _mapper.Map<Comment>(commentDto);
+
+                if (!await _commentRepository.CreateComment(comment))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok("Successfully created");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpDelete("{commentId}")]
-        public IActionResult DeleteComment(int commentId)
+        public async Task<IActionResult> DeleteComment(int commentId)
         {
-            if(!_commentRepository.CommentExists(commentId))
+            try
             {
-                return NotFound();
+                if (!await _commentRepository.CommentExists(commentId))
+                {
+                    return NotFound();
+                }
+
+                var commentLikes = await _likeRepository.GetLikesByCommentId(commentId);
+                var commentToDelete = await _commentRepository.GetCommentById(commentId);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                if (!await _likeRepository.DeleteCommentLikes(commentLikes))
+                {
+                    ModelState.AddModelError("", "Something went wrong deleting Comment Likes");
+                }
+
+                if (!await _commentRepository.DeleteComment(commentToDelete))
+                {
+                    ModelState.AddModelError("", "Something went wrong deleting Comment");
+                }
+
+                return NoContent();
             }
-
-            var commentLikes = _likeRepository.GetLikesByCommentId(commentId);
-            var commentToDelete = _commentRepository.GetCommentById(commentId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!_likeRepository.DeleteCommentLikes(commentLikes))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong deleting Comment Likes");
+                return StatusCode(500, ex.Message);
             }
-
-            if (!_commentRepository.DeleteComment(commentToDelete))
-            {
-                ModelState.AddModelError("", "Something went wrong deleting Comment");
-            }
-
-            return NoContent();
         }
 
         [HttpPost("like")]
-        public IActionResult LikeComment([FromBody] LikeCreateDto likeDto)
+        public async Task<IActionResult> LikeComment([FromBody] LikeCreateDto likeDto)
         {
-            if (likeDto == null)
-                return BadRequest(ModelState);
-
-            var like = _likeRepository.GetCommentLikeByIds(likeDto.UserId, likeDto.CommentId);
-
-            if (like != null)
+            try
             {
-                ModelState.AddModelError("", "Like already exists");
-                return StatusCode(422, ModelState);
+                if (likeDto == null)
+                    return BadRequest(ModelState);
+
+                var like = await _likeRepository.GetCommentLikeByIds(likeDto.UserId, likeDto.CommentId);
+
+                if (like != null)
+                {
+                    ModelState.AddModelError("", "Like already exists");
+                    return StatusCode(422, ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var likeMap = _mapper.Map<Like>(likeDto);
+                likeMap.CommentId = likeDto.CommentId;
+
+                if (!await _likeRepository.Like(likeMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok("Successfully created");
             }
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var likeMap = _mapper.Map<Like>(likeDto);
-            likeMap.CommentId = likeDto.CommentId;
-
-            if (!_likeRepository.Like(likeMap))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
+                return StatusCode(500, ex.Message);
             }
-
-            return Ok("Successfully created");
-
         }
 
         [HttpDelete("unlike")]
-        public IActionResult DeleteLikeComment([FromBody] LikeDto likeDto)
+        public async Task<IActionResult> DeleteLikeComment([FromBody] LikeDto likeDto)
         {
-            if (!_likeRepository.CommentLikeExists(likeDto.UserId, likeDto.CommentId))
+            try
             {
-                return NotFound();
+                if (!await _likeRepository.CommentLikeExists(likeDto.UserId, likeDto.CommentId))
+                {
+                    return NotFound();
+                }
+
+                var likeToDelete = await _likeRepository.GetCommentLikeByIds(likeDto.UserId, likeDto.CommentId);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                if (!await _likeRepository.Unlike(likeToDelete))
+                {
+                    ModelState.AddModelError("", "Something went wrong deleting like");
+                }
+
+                return NoContent();
             }
-
-            var likeToDelete = _likeRepository.GetCommentLikeByIds(likeDto.UserId, likeDto.CommentId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!_likeRepository.Unlike(likeToDelete))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong deleting like");
+                return StatusCode(500, ex.Message);
             }
-
-            return NoContent();
         }
         [HttpPut("update_like")]
-        public IActionResult UpdateLikeComment([FromBody] LikeDto likeDto)
+        public async Task<IActionResult> UpdateLikeComment([FromBody] LikeDto likeDto)
         {
-            if (!_likeRepository.CommentLikeExists(likeDto.UserId, likeDto.CommentId))
+            try
             {
-                return NotFound();
+                if (!await _likeRepository.CommentLikeExists(likeDto.UserId, likeDto.CommentId))
+                {
+                    return NotFound();
+                }
+
+                var likeToUpdate = await _likeRepository.GetCommentLikeByIds(likeDto.UserId, likeDto.CommentId);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                likeToUpdate.Type = !likeToUpdate.Type;
+
+                if (!await _likeRepository.UpdateLike(likeToUpdate))
+                {
+                    ModelState.AddModelError("", "Something went wrong updating like");
+                }
+
+                return NoContent();
             }
-
-            var likeToUpdate = _likeRepository.GetCommentLikeByIds(likeDto.UserId, likeDto.CommentId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            likeToUpdate.Type = !likeToUpdate.Type;
-
-            if (!_likeRepository.UpdateLike(likeToUpdate))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong updating like");
+                return StatusCode(500, ex.Message);
             }
-
-            return NoContent();
         }
 
     }

@@ -4,10 +4,10 @@ namespace BiblAI.Interfaces
 {
     public interface ICommentRepository
     {
-        bool CreateComment(Comment comment);
-        bool DeleteComment(Comment comment);
-        bool CommentExists(int id);
-        Comment GetCommentById(int id);
-        bool Save();
+        Task<bool> CreateComment(Comment comment);
+        Task<bool> DeleteComment(Comment comment);
+        Task<bool> CommentExists(int id);
+        Task<Comment> GetCommentById(int id);
+        Task<bool> Save();
     }
 }
