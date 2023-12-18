@@ -1,41 +1,50 @@
 .Post {
-  border: 2px solid black;
   margin: 20px;
   width: 50%;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 13px;
 }
 
 .question_area {
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  padding: 3px;
+  padding-left: 20px;
+  background-color: #42518e;
+  color: white;
 }
 
 .profile_info_area {
+  padding-right: 5px;
+  background-color: #2f3962;
+  color: white;
   display: flex;
   align-items: center;
   justify-content:flex-end;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 }
 
 .profile_info_area img {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   margin: 10px;
+  border-radius: 50%;
 }
 
 .answer_area {
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  padding: 3px;
+  padding-left: 20px;
 }
 
 .feedback_area {
   display: flex;
   align-items: center;
   justify-content:flex-end;
-  padding: 5px;
+  padding: 2px;
 }
 
 .feedback_area > img {
   width: 20px;
   height: 20px;
   margin: 10px;
+  margin-right: 30px;
 }

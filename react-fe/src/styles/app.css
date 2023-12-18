@@ -1,6 +1,7 @@
 @import "~@flaticon/flaticon-uicons/css/all/all";
 
 .App {
+  font-family: 'Kumbh Sans', sans-serif;
   border: 2px solid black;
   padding-top: 70px;
   top: 50px;

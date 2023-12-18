@@ -5,10 +5,11 @@ import {Home} from './pages/Home';
 import {Profile} from './pages/Profile';
 import {Header} from './components/Header';
 import '../src/styles/app.css';
-import Login from './pages/Login';
+import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Question } from './pages/Question';
 import { Answer } from './pages/Answer';
+import { UserProvider } from './services/userContext';
 
 function App() {
 
@@ -23,11 +24,12 @@ function App() {
 
   return (
     <div className="App">
+      <UserProvider>
       <QueryClientProvider client={client}>
         <Router>
           <Header />
           <Routes>
-            <Route path="/home/:userId" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/profile/:userId" element={<Profile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -36,6 +38,7 @@ function App() {
           </Routes>
         </Router>
       </QueryClientProvider>
+      </UserProvider>
     </div>
   );
 }

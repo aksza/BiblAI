@@ -4,6 +4,7 @@ import React from 'react';
 import { deleteLike, likePost, updateLike } from '../services/endpointFetching';
 import '../styles/post_card.css'
 import '../styles/comment.css'
+import { useUser } from '../services/userContext';
 
 interface PostCardProps {
     post: PostType;
@@ -12,35 +13,37 @@ interface PostCardProps {
   }
 
 export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, handleLike}) => {
+    const user = useUser();
 
     const likedPost = async () => {
         if (!post.likedByUser && !post.dislikedByUser) {
-            likePost(true, 1, post.id)
+            likePost(true, user.user.id ?? 0, post.id)
             handleLike(post.id, 1, 0)
         } else if (post.likedByUser && !post.dislikedByUser) {
-            deleteLike(1, post.id)
+            deleteLike(user.user.id ?? 0, post.id)
             handleLike(post.id, -1, 0)
         } else if (!post.likedByUser && post.dislikedByUser) {
-            updateLike(1, post.id)
+            updateLike(user.user.id ?? 0, post.id)
             handleLike(post.id , 1, -1)
         }
     }
 
     const dislikedPost = async () => {
         if (!post.likedByUser && !post.dislikedByUser) {
-            likePost(false, 1, post.id)
+            likePost(false, user.user.id ?? 0, post.id)
             handleLike(post.id, 0, 1)
         } else if (!post.likedByUser && post.dislikedByUser) {
-            deleteLike(1, post.id)
+            deleteLike(user.user.id ?? 0, post.id)
             handleLike(post.id, 0, -1)
         } else if (post.likedByUser && !post.dislikedByUser) {
-            updateLike(1, post.id)
+            updateLike(user.user.id ?? 0, post.id)
             handleLike(post.id, -1, 1)
         }
     }
 
     const upsideDown = {
-        transform: 'rotate(180deg)'
+        transform: 'rotate(180deg)',
+        zIndex: 2
     }
 
     return (
@@ -58,7 +61,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, h
                     </>
                     :<>
                         <p>anonymus</p>
-                        <Link to={`/profile/${post.userId}`}><img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" /></Link>
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
                     </>
                 }
             </div>
@@ -67,6 +70,8 @@ export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, h
                 <p>{[post.answer]}</p>
             </div>
 
+
+            {localStorage.getItem('token') &&
             <div className="feedback_area">
                 <p>{post.numLikes}</p>
                 {!post.likedByUser 
@@ -81,6 +86,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, h
                 <p>{post.comments.length}</p>
                 <i className="fi fi-rr-comment-alt" onClick={handlePostModalOpen}></i>
             </div>
+            }
         </div>
     )
 

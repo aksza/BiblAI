@@ -3,10 +3,8 @@
   align-items: center;
   justify-content: space-between;
   border: 1px solid #ccc;
+  padding: 20px;
 }
-
-
-
 
 .commentHeader {
   display: flex;

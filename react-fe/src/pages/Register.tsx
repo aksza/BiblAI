@@ -25,6 +25,7 @@ export const Register = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     registerUser(registerForm);
+    window.location.href = '/login';
   };
 
   return (

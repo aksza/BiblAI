@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import { useState } from 'react';
 import { useQuery } from "react-query"
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Post } from '../components/Post';
 import '../styles/profile_page.css'
 
@@ -20,17 +20,11 @@ export const Profile = () => {
     }
   });
 
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error loading user data.</div>;
-  }
-
   return (
+    
     <div className="Profile">
+      {!localStorage.getItem('token') ? <><Link to="/login">Login</Link>to look at others profile</> :
+      <div className="user_page">
       <div className="user_info">
         <div className="bios_part">
           <img src={user.profilePictureUrl} alt="blank" /> 
@@ -51,6 +45,7 @@ export const Profile = () => {
           post.anonym ? <Post key={post.question} post = {post} handleLike={() => {}} handleCommentLike={() => {}} handleComment={() => {}} /> : <></>
         ))}
       </div>
+    </div>}
     </div>
   );
 }

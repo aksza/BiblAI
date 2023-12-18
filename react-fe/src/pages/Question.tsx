@@ -2,6 +2,7 @@ import { Button, ButtonGroup } from "@mui/material"
 import { useState } from "react";
 import { askQuestion } from "../services/endpointFetching";
 import { useNavigate } from "react-router-dom";
+import '../styles/question.css'
 
 export const Question = () => {
     const nav = useNavigate();
@@ -20,7 +21,7 @@ export const Question = () => {
     }
 
     return (
-        <div>
+        <div className="Question">
             <div>
                 <h1>Ask questions about the Bible</h1>
             </div>

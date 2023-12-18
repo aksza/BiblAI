@@ -6,6 +6,7 @@ import { Button, Dialog, DialogContent, DialogTitle, Link } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom';
 import Axios from 'axios';
 import { createComment, likeComment, updateCommentLike, deleteCommentLike } from '../services/endpointFetching';
+import { useUser } from '../services/userContext';
 
 import '../styles/post_card.css'
 import '../styles/comment.css'
@@ -18,36 +19,37 @@ interface CommentSectionProps {
 }
 
 export const CommentSection: React.FC<CommentSectionProps> = ({ post, handleCommentLike, handleComment }) => {
+    const user = useUser();
     const [commentContent, setCommentContent] = useState('');
 
     const postComment = async () => {
-      await createComment(commentContent, post.id, post.userId, new Date().toISOString())
+      await createComment(commentContent, post.id, user.user.id ?? 0, new Date().toISOString())
       handleComment(post.id, commentContent)
       setCommentContent('')
     }
 
     const likeingComment = async (commentId : number, liked : boolean, disliked : boolean) => {
       if (!liked && !disliked) {
-        likeComment(true, 1, commentId)
+        likeComment(true, user.user.id ?? 0, commentId)
         handleCommentLike(post.id, commentId, 1, 0)
       } else if (liked && !disliked) {
-        updateCommentLike(1, commentId)
+        updateCommentLike(user.user.id ?? 0, commentId)
         handleCommentLike(post.id, commentId, -1, 0)
       } else if (!liked && disliked) {
-        deleteCommentLike(1, commentId)
+        deleteCommentLike(user.user.id ?? 0, commentId)
         handleCommentLike(post.id, commentId, 1, -1)
       }
     }
 
     const dislikeingComment = async (commentId : number, liked : boolean, disliked : boolean) => {
       if (!liked && !disliked) {
-        likeComment(false, 1, commentId)
+        likeComment(false, user.user.id ?? 0, commentId)
         handleCommentLike(post.id, commentId, 0, 1)
       } else if (!liked && disliked) {
-        updateCommentLike(1, commentId)
+        updateCommentLike(user.user.id ?? 0, commentId)
         handleCommentLike(post.id, commentId, 0, -1)
       } else if (liked && !disliked) {
-        deleteCommentLike(1, commentId)
+        deleteCommentLike(user.user.id ?? 0, commentId)
         handleCommentLike(post.id, commentId, -1, 1)
       }
     }
@@ -73,8 +75,17 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ post, handleComm
                 <div className='comment'>
                   <div className='commentLeft'>
                     <div className="commentHeader">
+                      {!post.anonym && comment.userName === post.userName ?
+                      <>
+                      <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+                      <p>anonymus</p> 
+                      </>
+                      :
+                      <>
                       <Link component={RouterLink} to={`/profile/${comment.userId}`} ><img src={comment.profilePictureUrl} alt="" /></Link>
                       <p>{comment.userName}</p>
+                      </>
+                      }
                       {comment.userName === post.userName ? <img src="https://cdn-icons-png.flaticon.com/128/25/25400.png" alt="" /> : <></>}
                     </div>
                     <div className='commentContent'>
