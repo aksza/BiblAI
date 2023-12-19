@@ -17,7 +17,11 @@ export interface HomeModel {
   posts: PostType[];
 }
 
-export const Home = () => {
+export interface HomeProps {
+  searchTerm: string;
+}
+
+export const Home = ({ searchTerm }: HomeProps) => {
   const user = useUser();
   const [publicHomeData, setPublicHomeData] = useState<PostType[]>([]);
   const [privateHomeData, setPrivateHomeData] = useState<HomeModel> ({
@@ -134,12 +138,16 @@ export const Home = () => {
 
       <div>
         {localStorage.getItem('token') ? 
-        privateHomeData.posts.map((post: PostType) => (
-          <Post key={post.id} post={post} handleLike={handleLike} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
-        )) : 
-        publicHomeData.map((post: PostType) => (
-          <Post key={post.id} post={post} handleLike={handleLike} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
-        ))}
+          privateHomeData.posts
+            .filter((post: PostType) => post.question.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map((post: PostType) => (
+              <Post key={post.id} post={post} handleLike={handleLike} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
+            )) : 
+          publicHomeData
+          .filter((post: PostType) => post.question.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map((post: PostType) => (
+              <Post key={post.id} post={post} handleLike={handleLike} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
+            ))}
       </div>
     </div>
   );

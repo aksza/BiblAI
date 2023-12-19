@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from "react-query"
 import {Home} from './pages/Home';
@@ -13,7 +13,7 @@ import { UserProvider } from './services/userContext';
 import '../src/styles/background.css';
 
 function App() {
-
+  const [searchTerm, setSearchTerm] = useState('');
 
   const client = new QueryClient({
     defaultOptions: {
@@ -29,9 +29,9 @@ function App() {
       <UserProvider>
       <QueryClientProvider client={client}>
         <Router>
-          <Header />
+          <Header setSearchTerm={setSearchTerm} />
           <Routes>
-            <Route path="/home" element={<Home />} />
+            <Route path="/home" element={<Home searchTerm={searchTerm} />} />
             <Route path="/profile/:userId" element={<Profile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
