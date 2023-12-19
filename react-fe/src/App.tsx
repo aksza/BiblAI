@@ -10,6 +10,7 @@ import { Register } from './pages/Register';
 import { Question } from './pages/Question';
 import { Answer } from './pages/Answer';
 import { UserProvider } from './services/userContext';
+import '../src/styles/background.css';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <div className="App">
+      <div className='background'></div>
       <UserProvider>
       <QueryClientProvider client={client}>
         <Router>

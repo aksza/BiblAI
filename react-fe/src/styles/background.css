@@ -1,0 +1,23 @@
+@keyframes move-forever {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+  
+  .big-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    animation: move-forever 25s linear infinite;
+    transform: translate(-50%, -50%);
+    mix-blur: 1rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+  }
+  
+  .big-circle:nth-child(2) {
+    animation-delay: 12s;
+    background: rgba(0, 0, 0, 0.02);
+  }

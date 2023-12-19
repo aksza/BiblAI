@@ -26,7 +26,7 @@ export const Post: React.FC<PostProps> = ({post, handleLike, handleCommentLike, 
     <div className="Post">
       <PostCard post={post} handlePostModalOpen={handlePostModalOpen} handleLike={handleLike} />
       <Dialog open={postModalOpen} onClose={handlePostModalClose} maxWidth="md" fullWidth style={{ padding: 0 }}>
-        <DialogContent style={{ padding: 0 }}>
+        <DialogContent style={{ padding: 0, fontFamily: 'Kumbh Sans' }}>
           <PostCard post={post} handlePostModalOpen={handlePostModalOpen} handleLike={handleLike}/>
           <CommentSection post={post} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
         </DialogContent>

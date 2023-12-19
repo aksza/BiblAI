@@ -29,20 +29,26 @@ export const Question = () => {
                 {/* Pas the function the value of the button */}
                 <Button variant="contained" color="primary" onClick={() => setTheQuestionArea('What is the meaning of life?')}>What is the meaning of life?</Button>
                 <Button variant="contained" color="primary" onClick={() => setTheQuestionArea('Who is Jesus?')}>Who is Jesus?</Button>
+                <Button variant="contained" color="primary" onClick={() => setTheQuestionArea('Who is Jesus?')}>Who is Jesus?</Button>
+                <Button variant="contained" color="primary" onClick={() => setTheQuestionArea('Who is Jesus?')}>Who is Jesus?</Button>
             </div>
             <div className="precision_area">
+                <div>
                 <div>How many verses?</div>
                 <ButtonGroup variant="contained" aria-label="outlined primary button group">
                     <Button onClick={() => setNumVerses(1)}>1</Button>
                     <Button onClick={() => setNumVerses(2)}>2</Button>
                     <Button onClick={() => setNumVerses(3)}>3</Button>
                 </ButtonGroup>
+                </div>
+                <div>
                 <div>How long should the answer be?</div>
                 <ButtonGroup variant="contained" aria-label="outlined primary button group">
                     <Button onClick={() => setAnswerLength('short')}>Short</Button>
                     <Button onClick={() => setAnswerLength('medium')}>Medium</Button>
                     <Button onClick={() => setAnswerLength('long')}>Long</Button>
                 </ButtonGroup>
+                </div>
             </div>
             <div className="ask_question_area">
                 <textarea name="input" placeholder="Write your question here..." onChange={(e) => setQuestion(e.target.value)}></textarea>

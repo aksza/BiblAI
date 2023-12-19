@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { loginUser } from '../services/endpointFetching';
 import { Button, Link, TextField } from '@mui/material';
+import '../styles/login.css';
 
 interface LoginFormModel {
   userName: string;

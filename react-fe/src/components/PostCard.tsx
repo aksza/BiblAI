@@ -56,7 +56,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, h
             <div className="profile_info_area">
                 {post.anonym 
                     ?<>
-                        <p>{post.userName}</p>
+                        <p>@{post.userName}</p>
                         <Link to={`/profile/${post.userId}`}><img src={post.profilePictureUrl} alt="" /></Link>
                     </>
                     :<>

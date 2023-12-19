@@ -1,5 +1,5 @@
 .Profile {
-  border: 2px solid black;
+  /* border: 2px solid black; */
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -12,6 +12,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  color: white;
 }
 
 .bios_part {

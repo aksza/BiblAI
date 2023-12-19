@@ -24,6 +24,13 @@
   border-radius: 50%;
 }
 
+#home_icon {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 .Header i {
   font-size: 20px;
   color: #000;

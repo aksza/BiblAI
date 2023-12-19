@@ -72,21 +72,23 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ post, handleComm
             </div>
             {
               post.comments.map((comment) => (
+                comment.content !== '' &&
                 <div className='comment'>
                   <div className='commentLeft'>
                     <div className="commentHeader">
                       {!post.anonym && comment.userName === post.userName ?
-                      <>
-                      <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-                      <p>anonymus</p> 
-                      </>
+                      <div className='user_info_part'>
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+                        <p>anonymus</p> 
+                        {comment.userName === post.userName ? <img id='asker' src="https://cdn-icons-png.flaticon.com/128/25/25400.png" alt="" /> : <></>}
+                      </div>
                       :
-                      <>
-                      <Link component={RouterLink} to={`/profile/${comment.userId}`} ><img src={comment.profilePictureUrl} alt="" /></Link>
-                      <p>{comment.userName}</p>
-                      </>
+                      <div className='user_info_part'>
+                        <Link component={RouterLink} to={`/profile/${comment.userId}`} ><img src={comment.profilePictureUrl} alt="" /></Link>
+                        <p>@{comment.userName}</p>
+                        {comment.userName === post.userName ? <img id='asker' src="https://cdn-icons-png.flaticon.com/128/25/25400.png" alt="" /> : <></>}
+                      </div>
                       }
-                      {comment.userName === post.userName ? <img src="https://cdn-icons-png.flaticon.com/128/25/25400.png" alt="" /> : <></>}
                     </div>
                     <div className='commentContent'>
                       <p>{comment.content}</p>

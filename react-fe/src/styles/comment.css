@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   border: 1px solid #ccc;
-  padding: 20px;
+  padding: 10px;
 }
 
 .commentHeader {
@@ -17,6 +17,18 @@
     border-radius: 50%;
 }
 
+.commentInput {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 10px;
+    margin: 10px;
+    resize: vertical;
+    min-height: 50px;
+
+
+
+}
 
 .commentFeedback img {
     width: 20px;
@@ -27,4 +39,19 @@
 .commentFeedback {
     display: flex;
     align-items: center;
+    padding: 10px;
+    gap: 5px;
+}
+
+.user_info_part {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+}
+
+#asker {
+  width: 23px;
+  height: 23px;
 }

@@ -5,18 +5,19 @@
   border-radius: 8px;
   overflow: hidden;
   font-size: 13px;
+  background-color: white;
 }
 
 .question_area {
   padding: 3px;
   padding-left: 20px;
-  background-color: #42518e;
+  background-color: rgb(43, 61, 132);
   color: white;
 }
 
 .profile_info_area {
   padding-right: 5px;
-  background-color: #2f3962;
+  background-color: #132059;
   color: white;
   display: flex;
   align-items: center;
@@ -40,6 +41,8 @@
   align-items: center;
   justify-content:flex-end;
   padding: 2px;
+  gap: 5px;
+  padding-right: 20px;
 }
 
 .feedback_area > img {
