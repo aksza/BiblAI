@@ -1,13 +1,12 @@
-﻿namespace BiblAI.Models
+﻿using BiblAI.Models;
+
+namespace BiblAI.Dto
 {
-    public class Verse
+    public class VerseDto
     {
-        public int Id { get; set; }
         public string Book { get; set; }
         public string Chapter { get; set; }
         public string Vers { get; set; }
         public string Link { get; set; }
-        public int PostId { get; set; }
-        public Post Post { get; set; }
     }
 }

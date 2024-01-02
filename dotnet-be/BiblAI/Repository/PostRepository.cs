@@ -33,7 +33,7 @@ namespace BiblAI.Repository
 
         public async Task<ICollection<Post>> GetPosts()
         {
-            return await _context.Posts.Include(p => p.Comments).ToListAsync();
+            return await _context.Posts.Include(p => p.Comments).Include(p => p.Verses).ToListAsync();
         }
 
         public async Task<bool> Save()
@@ -43,7 +43,7 @@ namespace BiblAI.Repository
 
         public async Task<ICollection<Post>> SearchPosts(string search)
         {
-            return await _context.Posts.Where(p => p.Question.ToUpper().Contains(search.ToUpper())).Include(p => p.Comments).ToListAsync();
+            return await _context.Posts.Where(p => p.Question.ToUpper().Contains(search.ToUpper())).Include(p => p.Comments).Include(p => p.Verses).ToListAsync();
         }
 
         public async Task<bool> UpdatePost(Post post)

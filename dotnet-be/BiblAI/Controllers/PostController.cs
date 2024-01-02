@@ -7,6 +7,7 @@ using BiblAI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static System.Net.WebRequestMethods;
 
 namespace BiblAI.Controllers
 {
@@ -19,11 +20,12 @@ namespace BiblAI.Controllers
         private readonly IUserRepository _userRepository;
         private readonly ILikeRepository _likeRepository;
         private readonly ICommentRepository _commentRepository;
+        private readonly IVerseRepository _verseRepository;
         private readonly FastApiService _fastApiService;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper, FastApiService fastApiService, ICommentRepository commentRepository, IHttpContextAccessor httpContextAccessor)
+        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper, FastApiService fastApiService, ICommentRepository commentRepository, IHttpContextAccessor httpContextAccessor, IVerseRepository verseRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
@@ -32,6 +34,7 @@ namespace BiblAI.Controllers
             _fastApiService = fastApiService;
             _commentRepository = commentRepository;
             _httpContextAccessor = httpContextAccessor;
+            _verseRepository = verseRepository;
         }
 
         [HttpGet("public")]
@@ -129,16 +132,28 @@ namespace BiblAI.Controllers
                     ModelState.AddModelError("", "Something went wrong while saving post");
                     return StatusCode(500, ModelState);
                 }
-
-                var commentMap = _mapper.Map<Comment>(postDto);
-                commentMap.PostId = postMap.Id;
-
-                if (!await _commentRepository.CreateComment(commentMap))
+                if (postDto.Content != null)
                 {
-                    ModelState.AddModelError("", "Something went wrong while saving comment");
-                    return StatusCode(500, ModelState);
+                    var commentMap = _mapper.Map<Comment>(postDto);
+                    commentMap.PostId = postMap.Id;
+
+                    if (!await _commentRepository.CreateComment(commentMap))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving comment");
+                        return StatusCode(500, ModelState);
+                    }
                 }
 
+                foreach(var verseDto in postDto.Verses)
+                {
+                    var verseMap = _mapper.Map<Verse>(verseDto);
+                    verseMap.PostId = postMap.Id;
+                    if (!await _verseRepository.CreateVerse(verseMap))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving verse");
+                        return StatusCode(500, ModelState);
+                    }
+                }
 
                 return Ok("Successfully created");
             }

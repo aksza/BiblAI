@@ -229,4 +229,18 @@ namespace BiblAI.Helper
             return false;
         }
     }
+
+    public class BookConvert : IValueResolver<VerseCreateDto, Verse, string>
+    {
+        private readonly BookConverter _convert;
+        public BookConvert()
+        {
+            _convert = new BookConverter();
+        }
+
+        public string Resolve(VerseCreateDto source, Verse destination, string destMember, ResolutionContext context)
+        {
+            return $"https://www.bible.com/bible/1/{_convert.ConvertToSpecificName(source.Book)}.{source.Chapter}.{source.Vers}.kjv";
+        }
+    }
 }

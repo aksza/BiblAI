@@ -28,9 +28,27 @@ namespace BiblAI.Repository
 
         public async Task<User> GetUserById(int id)
         {
-            return await _context.Users.Where(u => u.Id == id)
-                .Include(u => u.Posts).ThenInclude(p => p.Comments)
-                .FirstOrDefaultAsync();
+            var user = await _context.Users
+        .Where(u => u.Id == id)
+        .Select(u => new
+        {
+            User = u,
+            Posts = u.Posts.Select(p => new
+            {
+                Post = p,
+                Comments = p.Comments,
+                Verses = p.Verses
+            })
+        })
+        .FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                user.User.Posts = user.Posts.Select(p => p.Post).ToList();
+                return user.User;
+            }
+
+            return null;
         }
 
         public async Task<User> GetUserByUserName(string userName)
