@@ -75,6 +75,8 @@ export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, h
             </div>
             
             <div className="feedback_area">
+                {localStorage.getItem('token') && 
+                <>
                 <p>{post.numLikes}</p>
                 {!post.likedByUser 
                 ?   <i onClick={likedPost} className="fi fi-rr-social-network"></i> 
@@ -84,6 +86,8 @@ export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, h
                 {!post.dislikedByUser 
                 ?   <i onClick={dislikedPost} style={upsideDown} className="fi fi-rr-social-network" ></i> 
                 :   <i onClick={dislikedPost} style={upsideDown} className="fi fi-sr-thumbs-up"></i>
+                }
+                </>
                 }
                 <p>{post.comments.length}</p>
                 <i className="fi fi-rr-comment-alt" onClick={handlePostModalOpen}></i>

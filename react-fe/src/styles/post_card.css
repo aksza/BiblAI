@@ -52,6 +52,8 @@
   margin-right: 30px;
 }
 
+/* This part belongs to the user info and verses section on the post card */
+
 .verses_area {
   padding: 3px;
   padding-left: 20px;
@@ -83,5 +85,11 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
 
+.PostCard i:hover,
+.CommentSection i:hover {
+  cursor: pointer;
+  color: rgb(68, 98, 217);
+  transition: 0.3s;
 }

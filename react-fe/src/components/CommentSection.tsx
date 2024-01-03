@@ -61,6 +61,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ post, handleComm
 
     return (
         <div className='CommentSection'>
+            {localStorage.getItem('token') &&
             <div className='commentInput'>
               <Input
                 value={commentContent}
@@ -69,7 +70,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ post, handleComm
                 fullWidth
               />
               <Button onClick={postComment}>Post</Button>
-            </div>
+            </div>}
             {
               post.comments.map((comment) => (
                 comment.content !== '' &&
@@ -95,12 +96,14 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ post, handleComm
                     </div>
                   </div>
                   <div className='commentRight'>
+                    {localStorage.getItem('token') && 
                     <div className='commentFeedback'>
                       <p>{comment.numLikes}</p>
                       {!comment.likedByUser ? <i onClick={() => {likeingComment(comment.id, comment.likedByUser, comment.dislikedByUser)}} className="fi fi-rr-social-network"></i> : <i onClick={() => {likeingComment(comment.id, comment.likedByUser, comment.dislikedByUser)}} className="fi fi-sr-thumbs-up"></i>}
                       <p>{comment.numDislikes}</p>
                       {!comment.dislikedByUser ? <i onClick={() => {dislikeingComment(comment.id, comment.likedByUser, comment.dislikedByUser)}} style={upsideDown} className="fi fi-rr-social-network" ></i> : <i onClick={() => {dislikeingComment(comment.id, comment.likedByUser, comment.dislikedByUser)}} style={upsideDown} className="fi fi-sr-thumbs-up"></i>}
                     </div>
+                    }
                   </div>
                 </div>
               ))
