@@ -6,12 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 
+app = FastAPI()
+
 class QuestionRequest(BaseModel):
     question: str
     length: str
     num_verses: int
-
-app = FastAPI()
 
 class AiVerse(BaseModel):
     book: str
@@ -34,6 +34,7 @@ async def get_answer(question_request: QuestionRequest):
         time="0.00",
         verses=hardcoded_verses
     )
+
     return answer
 
     

@@ -17,6 +17,10 @@ export const Header = ({setSearchTerm}: HeaderProps) => {
     setToken(null)
     console.log('token deleted')
     window.location.href = '/login';
+    // Delete information from local storage
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('profilePictureUrl');
   }
 
   useEffect(() => {
@@ -40,7 +44,7 @@ export const Header = ({setSearchTerm}: HeaderProps) => {
         <div className='header_right_side'>
         <Link to='/question'><i className="fi fi-br-plus"></i></Link>
         <i className="fi fi-rs-exit" onClick={deleteToken}></i>
-        <Link to={`profile/${user.user.id}`}><img src={user.user.profilePictureUrl} alt='' /></Link>
+        <Link to={`profile/${localStorage.getItem('userId') ?? ''}`}><img src={localStorage.getItem('profilePictureUrl') ?? ''} alt='' /></Link>
         </div>
         }
       </div>

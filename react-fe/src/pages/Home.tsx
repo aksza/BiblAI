@@ -125,6 +125,9 @@ export const Home = ({ searchTerm }: HomeProps) => {
           userName: (data as HomeModel).userName,
           profilePictureUrl: (data as HomeModel).profilePictureUrl
         } as UserType);
+        localStorage.setItem('userId', (data as HomeModel).userId.toString());
+        localStorage.setItem('userName', (data as HomeModel).userName);
+        localStorage.setItem('profilePictureUrl', (data as HomeModel).profilePictureUrl);
       } else { 
         setPublicHomeData(data as PostType[])
       }

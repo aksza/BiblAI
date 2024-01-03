@@ -17,4 +17,5 @@ export interface Post {
     postHashtag: Verse[];
     likedByUser: boolean;
     dislikedByUser: boolean;
+    verses: Verse[];
 }

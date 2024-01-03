@@ -1,5 +1,6 @@
 export interface Verse {
     book: string;
     chapter: number;
-    verse: number;
+    vers: number;
+    link: string;
 }

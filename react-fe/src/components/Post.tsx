@@ -1,6 +1,4 @@
-import { Post as PostType} from '../../models/PostModel'
-import { Users } from '../../models/UserModel'
-import {Link} from 'react-router-dom';
+import { Post as PostType } from '../../models/PostModel'
 import '../styles/post_card.css'
 import '../styles/comment.css'
 import React, { useState } from 'react';
@@ -20,7 +18,6 @@ export const Post: React.FC<PostProps> = ({post, handleLike, handleCommentLike, 
   const [postModalOpen, setPostModalOpen] = useState(false);
   const handlePostModalOpen = () => setPostModalOpen(true)
   const handlePostModalClose = () => setPostModalOpen(false);
-
 
   return (
     <div className="Post">

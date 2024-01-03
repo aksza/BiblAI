@@ -54,24 +54,26 @@ export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, h
             </div>
 
             <div className="profile_info_area">
-                {post.anonym 
-                    ?<>
-                        <p>@{post.userName}</p>
-                        <Link to={`/profile/${post.userId}`}><img src={post.profilePictureUrl} alt="" /></Link>
-                    </>
-                    :<>
-                        <p>anonymus</p>
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-                    </>
-                }
+                <div className='verses_area'>
+                    {post.verses.map((verse, index) => {
+                        return <a href={verse.link}><div className='link_tag' key={index}>{verse.book + verse.chapter + ":" + verse.vers}</div></a>
+                    }
+                    )}
+                </div>
+                <div className='username_area'>
+                    {post.anonym 
+                        ?<><p>@{post.userName}</p>
+                            <Link to={`/profile/${post.userId}`}><img src={post.profilePictureUrl} alt="" /></Link></>
+                        :<><p>anonymus</p>
+                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" /></>
+                    }
+                </div>
             </div>
 
             <div className="answer_area">
                 <p>{[post.answer]}</p>
             </div>
-
-
-            {localStorage.getItem('token') &&
+            
             <div className="feedback_area">
                 <p>{post.numLikes}</p>
                 {!post.likedByUser 
@@ -86,7 +88,6 @@ export const PostCard: React.FC<PostCardProps> = ({ post, handlePostModalOpen, h
                 <p>{post.comments.length}</p>
                 <i className="fi fi-rr-comment-alt" onClick={handlePostModalOpen}></i>
             </div>
-            }
         </div>
     )
 
