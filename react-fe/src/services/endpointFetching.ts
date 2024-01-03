@@ -2,6 +2,7 @@ import { axiosGet, axiosPost, axiosPut, axiosDelete } from "./fetchMethods";
 
 import { Post as PostType } from "../../models/PostModel"
 import { RegisterFormModel } from "../../models/RegisterFormModel";
+import { VersType } from "../../models/Answer";
 
 
 // ? GET REQUESTS
@@ -124,15 +125,16 @@ export const askQuestion = async (question: string, length: string, num_verses: 
     }
 }
 
-export const postCreate = async (question: string, answer: string, content: string, anonym: boolean, userId: number, date: string) => {
+export const postCreate = async (question: string, answer: string, content: string, anonym: boolean, userId: number, date: string, verses: VersType[]) => {
     try {
         const response = await axiosPost(`${process.env.REACT_APP_API_URL}/Post/create`, {
-            question: question,
             answer: answer,
+            question: question,
             content: content,
             anonym: anonym,
             userId: userId,
             date: date,
+            verses: verses,
         });
         return response;
     } catch (error) {

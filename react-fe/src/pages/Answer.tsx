@@ -28,12 +28,13 @@ export const Answer = () => {
 
     const postThisAnswer = async () => {
         const resp = await postCreate(
-            answer?.question ?? "",
             answer?.answer ?? "",
+            answer?.question ?? "",
             myOpinion,
             !isAnonym,
             user.user.id ?? 0,
-            new Date().toISOString()
+            new Date().toISOString(),
+            answer?.verses ?? []
         )
         console.log(resp)
         nav('/home')
@@ -44,6 +45,11 @@ export const Answer = () => {
     return (
         <div className="Answer">
             <div>{answer?.answer}</div>
+            <div>
+                {answer?.verses.map((verse, index) => {
+                    return <div>{verse.book + verse.chapter + ":" + verse.vers}</div>
+                })}
+            </div>
             <div>{answer?.question}</div>
             <div>{answer?.time}s</div>
             {
