@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_fe/auth/auth_service.dart';
 import 'package:flutter_fe/models/user_model.dart';
 import 'package:flutter_fe/utils/request_util.dart';
 import 'package:flutter_fe/widgets/custom_bottom_app_bar.dart';
@@ -45,11 +46,22 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Scaffold(
       backgroundColor: Colors.grey[300],
       bottomNavigationBar: const CustomBottomAppBar(),
-      body: 
+      appBar: AppBar(
+        backgroundColor: Colors.transparent, // Átlátszó háttér
+        elevation: 0, // Árnyék nélkül
+        actions: [
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              AuthService().logout(context);
+            },
+          ),
+        ],
+      ),
+      body:
       ListView(
        
         children:[
-          const SizedBox(height: 30,),
           //profile pic
           Container(
                 width: 80.0,
@@ -98,9 +110,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                   userId: 2,
                 );
               },
+
             ):
             const Text(" ")
-
           )
         ]
       )

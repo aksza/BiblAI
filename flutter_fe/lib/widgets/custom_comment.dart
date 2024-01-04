@@ -203,8 +203,9 @@ class _CustomCommentView extends State<CustomCommentView>{
                     child:
                       Text(
                         widget.comment.userName,
-                        style: TextStyle(
-                          color: Colors.grey[500],
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                   ),
@@ -214,6 +215,7 @@ class _CustomCommentView extends State<CustomCommentView>{
               ),
             ),
 
+            if(widget.userId == widget.comment.userId)
             IconButton(
               icon: Icon(Icons.delete),
               onPressed: () {

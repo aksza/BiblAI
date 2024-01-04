@@ -209,14 +209,19 @@ class _CustomPostView extends State<CustomPostView>{
                     child:
                       Text(
                          isAnonym ? "Anonym" : widget.post.userName,
-                        style: TextStyle(
-                          color: Colors.grey[500],
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                   ),
                   const SizedBox(height: 10),
                   Text(widget.post.question),
                   const SizedBox(height: 10),
+                  const Text("Answer:",
+                    style: TextStyle(
+                    color: Colors.grey),),
+                  const SizedBox(height: 5,),
                   Text(widget.post.answer),
                 ],
               ),
@@ -226,8 +231,11 @@ class _CustomPostView extends State<CustomPostView>{
         const SizedBox(height: 20,),
         Row(
               children: [
-                const SizedBox(width: 50),
-                const Text("Verses: "),
+                const SizedBox(width: 60),
+                const Text("Verses: ",
+                  style: TextStyle(
+                  color: Colors.grey),
+                  ),
                 if (verses.isNotEmpty)
                   ...verses.map((verse) => CustomVerseButton(verse: verse)).toList(),
               ],

@@ -29,10 +29,11 @@ class AuthService  with ChangeNotifier{
     }
   }
   
-  void logout() {
+  void logout(BuildContext context) {
     // Logikát ide írd a kijelentkezéshez, például token törléshez stb.
     // Például, amikor a kijelentkezés sikeres:
     _isAuthenticated = false;
+    DatabaseProvider().logOut(context);
     notifyListeners(); // Értesítjük a hallgatókat a változásról
   }
 }
