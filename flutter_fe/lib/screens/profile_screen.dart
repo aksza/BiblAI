@@ -20,7 +20,7 @@ class ProfileScreen extends StatefulWidget{
 class _ProfileScreenState extends State<ProfileScreen>
 {
     final RequestUtil requestUtil = RequestUtil();
-    late User user = User(userName: 'xy', firstName: 'xy', profilePictureUrl:'abc.com', lastName: 'xy', birthDate: '2002', gender: true);
+    late User user = User(userName: 'test', firstName: 'test', profilePictureUrl:'https://th.bing.com/th/id/OIP.pbojkN8pg6P0d59BynGVrgHaGt?rs=1&pid=ImgDetMain', lastName: 'test', birthDate: '2002', gender: true);
 
     @override
   void initState() {
@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
    Future<void> fetchUser() async {
     var response = await requestUtil.getUser(widget.userId);
-
+    Logger().i(widget.userId);
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
       user =  User.fromJson(jsonData);
@@ -46,7 +46,8 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Scaffold(
       backgroundColor: Colors.grey[300],
       bottomNavigationBar: const CustomBottomAppBar(),
-      body: ListView(
+      body: 
+      ListView(
        
         children:[
           const SizedBox(height: 30,),
@@ -87,19 +88,24 @@ class _ProfileScreenState extends State<ProfileScreen>
 
           //user posts
           SizedBox(
-            height: 320, // Set a fixed height or use other constraints
-            child: ListView.builder(
+            height: 320,
+            child: user.posts != null ? 
+              ListView.builder(
               itemCount: user.posts?.length,
               itemBuilder: (context, index) {
                 return CustomPostView(
                   post: user.posts![index],
                   user: user,
+                  userId: 2,
                 );
               },
-            ),
+            ):
+            Text(" "),
+
           )
         ]
       )
+
     );
   }
 }

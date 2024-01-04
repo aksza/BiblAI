@@ -1,18 +1,25 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
+import 'package:flutter_fe/auth/db_service.dart';
 import 'package:flutter_fe/auth/login_or_register.dart';
-import 'package:flutter_fe/utils/request_util.dart';
-import 'home_screen.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-
-// import 'package:flutter_fe/models/splash_model.dart';
-
+import 'package:flutter_fe/auth/auth_service.dart';
 
 class SplashScreenPage extends StatelessWidget {
   static const routeName = '/';
 
-  const SplashScreenPage({super.key});
+  SplashScreenPage({super.key});
+
+  // void navigate(){
+  //   Future.delayed(const Duration(seconds: 3), (){
+  //       DatabaseProvider().getToken().then((value) {
+
+  //         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginOrRegister()),
+  //         );
+  //       }
+  //     );
+  //   }
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +42,10 @@ class SplashScreenPage extends StatelessWidget {
           ),
         ),
       ),
-      nextScreen: const HomeScreen(),
+
+      
+      nextScreen: LoginOrRegister(),
+      
       splashTransition: SplashTransition.fadeTransition,
       // pageTransitionType: PageTransitionType.scale,
     );

@@ -22,7 +22,7 @@ class PostInfo{
   late String userName;
   late String question;
   late String answer;
-  // late List<Verse>? verses;
+  // late List<Verse>? postHashtag;
   late int userId;
   late String profilePictureUrl;
   late int numLikes;
@@ -49,6 +49,7 @@ class PostInfo{
     required this.numDisLikes,
     required this.likedByUser,
     required this.dislikedByUser,
+    // this.postHashtag
   });
   
   Map<String,dynamic> toMap(){

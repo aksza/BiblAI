@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_fe/auth/auth_service.dart';
 import 'package:flutter_fe/screens/login_screen.dart';
 import 'package:flutter_fe/screens/register_screen.dart';
 
 class LoginOrRegister extends StatefulWidget {
-  const LoginOrRegister({super.key});
+
+  LoginOrRegister({super.key});
+
 
   @override
   State<LoginOrRegister> createState() => _LoginOrRegisterState();
@@ -13,7 +16,7 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
   //initially show the login page
   bool showLoginPage = true;
 
-  //toggle between logina nd register page
+  //toggle between login and register page
   void togglePages(){
     setState(() {
       showLoginPage = !showLoginPage;
