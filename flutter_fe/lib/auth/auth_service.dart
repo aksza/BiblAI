@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/utils/request_util.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_fe/auth/db_service.dart';
 
 class AuthService  with ChangeNotifier{

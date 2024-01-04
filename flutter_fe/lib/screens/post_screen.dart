@@ -26,7 +26,6 @@ class _PostScreenState extends State<PostScreen>
   final RequestUtil requestUtil = RequestUtil();
   final textController = TextEditingController();
   
-
   int getLastCommentId() {
     if (widget.post.comments != null && widget.post.comments!.isNotEmpty) {
       Comment lastComment = widget.post.comments!.last;
@@ -52,7 +51,6 @@ class _PostScreenState extends State<PostScreen>
   Future<void> createComment(commentText) async {
     try {
       var date = DateTime.now();
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
       await requestUtil.postComment(commentText,widget.userId,widget.post.id,date.toIso8601String());
 
     } catch (error) {
@@ -102,7 +100,6 @@ class _PostScreenState extends State<PostScreen>
           SizedBox(
             height: 220, 
             child: ListView.builder(
-              // itemCount: widget.user.posts?.length,
               itemCount: widget.post.comments?.length,
               itemBuilder: (context, index) {
                 return CustomCommentView(
@@ -116,6 +113,5 @@ class _PostScreenState extends State<PostScreen>
         ]
       )
     );
-  }
-  
+  } 
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_fe/models/verse_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -160,7 +161,7 @@ class RequestUtil{
     
   }
 
-  Future<void> postCreatePost(String question,String answer,String content, bool anonym, int userId, String date) async {
+  Future<void> postCreatePost(String question,String answer,String content, bool anonym, int userId, String date,List<Verse> verses ) async {
     
     String? token = await DatabaseProvider().getToken();
     Logger().i(token);
@@ -178,6 +179,11 @@ class RequestUtil{
             'anonym' : anonym,
             'userId': userId,
             'date': date,
+            'verses': verses.map((verse) => {
+              'book': verse.book,
+              'chapter': verse.chapter,
+              'vers': verse.verse,
+              }).toList(),
           }),
           headers: headers,
         );
@@ -198,7 +204,7 @@ class RequestUtil{
       
       try{
         final url = Uri.parse("https://$endpoint/api/Post/like");
-        await http.post(
+        var res = await http.post(
           url,
           body: jsonEncode({
             "type": type,
@@ -207,6 +213,7 @@ class RequestUtil{
           }),
           headers: headers,
         );
+        Logger().i(res.body);
       }catch(error){
         Logger().e("Error in postLikePost: $error");
         rethrow;

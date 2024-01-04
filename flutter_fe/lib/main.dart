@@ -11,6 +11,7 @@ import 'package:flutter_fe/screens/splash_screen.dart';
 import 'dart:io';
 import 'package:flutter_fe/screens/post_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_fe/models/verse_model.dart';
 
 
 
@@ -49,7 +50,9 @@ class MyApp extends StatelessWidget {
         numLikes: 1, 
         numDisLikes: 2, 
         likedByUser: false, 
-        dislikedByUser: false),
+        dislikedByUser: false,
+        verses: [Verse(book: "Psalms", chapter: "10", verse: "20",link: "https://www.bible.com/bible/1/.12.3.kjv")]
+        ),
         user: User(
           userName: "userName",
           firstName: "firstName", 
@@ -58,6 +61,7 @@ class MyApp extends StatelessWidget {
           gender: false, 
           profilePictureUrl: "profilePictureUrl"),
         userId: 0,
+        
       )
     };
 

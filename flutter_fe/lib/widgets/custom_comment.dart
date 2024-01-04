@@ -100,7 +100,6 @@ class _CustomCommentView extends State<CustomCommentView>{
 
   Future<void> likeComment() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
       await requestUtil.postCommentLike(isLiked,widget.userId,widget.comment.id);
 
     } catch (error) {
@@ -110,7 +109,6 @@ class _CustomCommentView extends State<CustomCommentView>{
 
   Future<void> unlikeComment() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
       await requestUtil.deleteCommentUnlike(widget.userId,widget.comment.id);
 
     } catch (error) {
@@ -120,7 +118,6 @@ class _CustomCommentView extends State<CustomCommentView>{
 
   Future<void> dislikeComment() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
       await requestUtil.postCommentLike(!isDisliked,widget.userId,widget.comment.id);
 
     } catch (error) {

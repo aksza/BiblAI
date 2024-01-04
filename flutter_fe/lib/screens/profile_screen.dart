@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/models/user_model.dart';
 import 'package:flutter_fe/utils/request_util.dart';
@@ -100,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 );
               },
             ):
-            Text(" "),
+            const Text(" ")
 
           )
         ]

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/auth/db_service.dart';
 import 'package:flutter_fe/models/post_model.dart';
@@ -16,7 +15,6 @@ class SearchScreen extends StatefulWidget{
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
-
 }
 
 class _SearchScreenState extends State<SearchScreen>{
@@ -44,7 +42,7 @@ class _SearchScreenState extends State<SearchScreen>{
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
       user =  User.fromJson(jsonData);
-      setState(() {}); // Frissítsd a UI-t a userrel
+      setState(() {});
     } else {
       Logger().e('Error: ${response.reasonPhrase}');
     }
@@ -62,7 +60,7 @@ class _SearchScreenState extends State<SearchScreen>{
       body: Center(
         child: Column(
           children: [
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child:
@@ -71,7 +69,6 @@ class _SearchScreenState extends State<SearchScreen>{
                     Expanded(
                       child: SearchBar(
                         elevation: MaterialStateProperty.all(25.0),
-                        // leading: const Icon(Icons.search),
                         backgroundColor: MaterialStateProperty.all(
                           const Color.fromARGB(255, 240, 240, 240),
                         ),
@@ -97,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen>{
                     },
                   )
                 : const Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
                   child: Column(     
                       children: [
                         SizedBox(height: 10,),
@@ -165,23 +162,3 @@ Future<void> fetchSearch() async {
     }
   }
 }
-
-// class SearchScreen extends StatelessWidget{
-//   static const routeName = '/search';
-
-//   const SearchScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context){
-//     return Scaffold(
-//       bottomNavigationBar: const CustomBottomAppBar(),
-//       body: Container(
-//         alignment: Alignment.center,
-//         child: const Text(
-//           'Search',
-//           style: TextStyle(fontSize:24),
-//         ),
-//       ),
-//     );
-//   }
-// }

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/models/post_model.dart';
 import 'package:flutter_fe/models/user_model.dart';
-import 'package:flutter_fe/screens/profile_screen.dart';
 import 'package:flutter_fe/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter_fe/widgets/custom_post_view.dart';
 import 'package:http/src/response.dart';
@@ -28,11 +27,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final RequestUtil requestUtil = RequestUtil();
-  //TODO:ezeket majd at kell rakni a statefullba, mert lesz login, es akkor required kell lennie
   late List<PostInfo> posts = [];
   late User user = User(userName: "xy", firstName: "xy", lastName: "xy", birthDate: "02.18", gender: true, profilePictureUrl: "xyz.com");
   var userId;
-  // AuthService authService = AuthService();
 
   @override
   void initState() {
@@ -43,23 +40,18 @@ class _HomeScreenState extends State<HomeScreen> {
   
   @override
   void dispose() {
-    // Leiratkozunk az AuthService-ről a widget megszűnésekor
     Provider.of<AuthService>(context, listen: false).removeListener(_onAuthServiceChange);
     super.dispose();
   }
 
   void _onAuthServiceChange() {
-    // Itt kezelheted az AuthService állapotváltozását
-    // Például, ha be vagy jelentkezve, hívhatod a fetchPosts metódust
     if (Provider.of<AuthService>(context, listen: false).isAuthenticated) {
       fetchPosts();
     }
   }
 
-  //TODO:ezeket is atirni try catchre
   Future<void> fetchPosts() async {
     Response response;
-    // Logger().i(Provider.of<AuthService>(context, listen: false).isAuthenticated);
     if(Provider.of<AuthService>(context, listen: false).isAuthenticated)
     {
       response = await requestUtil.getPostPrivate();
@@ -82,9 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (jsonData.containsKey("posts")) {
         var postsData = jsonData["posts"];
+
         posts = (postsData as List).map((data) => PostInfo.fromJson(data)).toList();
         setState(() {
-        });        
+        });       
       } else {
         Logger().e('Error: Missing "posts" property in JSON data');
       }
@@ -119,11 +112,11 @@ class _HomeScreenState extends State<HomeScreen> {
       //   IconButton(onPressed: (){DataBaseProvider().logOut(context);}, icon: Icon(Icons.exit_to_app))
       // ]
       body: Center(
-        child: posts != null
+        child: posts.isNotEmpty
             ? Column(
                 children: [
-                  SizedBox(height: 30,),
-                  Text("BIBLAI",
+                  const SizedBox(height: 30,),
+                  const Text("BIBLAI",
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontSize: 20,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/models/post_model.dart';
 import 'package:flutter_fe/models/user_model.dart';
+import 'package:flutter_fe/models/verse_model.dart';
 import 'package:flutter_fe/screens/post_screen.dart';
 import 'package:flutter_fe/screens/profile_screen.dart';
+import 'package:flutter_fe/widgets/custom_verse_button.dart';
 import 'package:flutter_fe/widgets/dislike_button.dart';
 import 'package:flutter_fe/widgets/like_button.dart';
 import 'package:flutter_fe/utils/request_util.dart';
@@ -34,6 +36,7 @@ class _CustomPostView extends State<CustomPostView>{
   int numLikes = 0;
   int numDisLikes = 0;
   bool isAnonym = false;
+  List<Verse> verses = [];
 
   @override
   void initState(){
@@ -41,8 +44,9 @@ class _CustomPostView extends State<CustomPostView>{
     isLiked = widget.post.likedByUser;
     isDisliked = widget.post.dislikedByUser;
     numLikes = widget.post.numLikes;
-    numLikes = widget.post.numDisLikes;
+    numDisLikes = widget.post.numDisLikes;
     isAnonym = widget.post.anonym;
+    verses = widget.post.verses;
   }
 
   //toggle like
@@ -82,8 +86,8 @@ class _CustomPostView extends State<CustomPostView>{
       updatePostLike();
       setState(() {
         isLiked = !isLiked;
-        numDisLikes++;
         numLikes--;
+        numDisLikes++;
       }); 
     }
     else if(isDisliked){
@@ -103,7 +107,6 @@ class _CustomPostView extends State<CustomPostView>{
 
   Future<void> likePost() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
       await requestUtil.postLikePost(isLiked,widget.userId,widget.post.id);
 
     } catch (error) {
@@ -113,7 +116,6 @@ class _CustomPostView extends State<CustomPostView>{
 
   Future<void> unlikePost() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
       await requestUtil.deletePostUnlike(widget.userId,widget.post.id);
 
     } catch (error) {
@@ -123,7 +125,6 @@ class _CustomPostView extends State<CustomPostView>{
 
   Future<void> dislikePost() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
       await requestUtil.postLikePost(!isDisliked,widget.userId,widget.post.id);
 
     } catch (error) {
@@ -222,6 +223,15 @@ class _CustomPostView extends State<CustomPostView>{
             ),
           ],
         ),
+        const SizedBox(height: 20,),
+        Row(
+              children: [
+                const SizedBox(width: 50),
+                const Text("Verses: "),
+                if (verses.isNotEmpty)
+                  ...verses.map((verse) => CustomVerseButton(verse: verse)).toList(),
+              ],
+            ),
         const SizedBox(height: 20),
         Row(
           children: [
@@ -233,7 +243,6 @@ class _CustomPostView extends State<CustomPostView>{
             ),
 
             Text(
-              //int.parse(i.toString)
               numLikes.toString(),
               style: const TextStyle(
                 color: Colors.black,

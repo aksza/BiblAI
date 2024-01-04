@@ -5,7 +5,6 @@ import 'package:flutter_fe/widgets/custom_text_field.dart';
 import 'package:flutter_fe/auth/auth_service.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 
@@ -24,8 +23,6 @@ class _LoginScreenState extends State<LoginScreen>{
   //text editing controllers
   final userNameTextController = TextEditingController();
   final passwordTextController = TextEditingController();
-
-  // AuthService authService = AuthService(); 
 
   @override
   Widget build(BuildContext context){
@@ -115,16 +112,6 @@ class _LoginScreenState extends State<LoginScreen>{
                             fontSize: 16.0,
                           );
                         }
-
-
-                        // auth.login(userNameTextController.text,passwordTextController.text);
-                        // setState(() {
-                          
-                        // });
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(builder: (context) => HomeScreen()),
-                        //   );
                       },
                       text: 'Sign In'
                     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fe/auth/auth_service.dart';
 import 'package:flutter_fe/screens/login_screen.dart';
 import 'package:flutter_fe/utils/request_util.dart';
 import 'package:flutter_fe/widgets/custom_button.dart';
@@ -11,7 +10,7 @@ class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
 
   final Function()? onTap;
-  RegisterScreen({super.key,required this.onTap});
+  const RegisterScreen({super.key,required this.onTap});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -29,14 +28,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final fistNameTextController = TextEditingController();
   final lastNameTextController = TextEditingController();
   final profilePictureTextController = TextEditingController();
-  final birthDateTextController = TextEditingController();
   final bioTextController = TextEditingController();
   final religionTextController = TextEditingController();
   final dateController = TextEditingController();
 
-
-
-  bool genderValue = false; // Alapértelmezett érték
+  bool genderValue = false;
   bool marriedValue = false;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -158,9 +154,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: true //you cant see the characters
                   ),
 
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
 
-                  
                   //profile picture
                   MyTextField(
                     controller: profilePictureTextController,
@@ -169,12 +164,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 10),
 
-
                   //birth date
                   TextFormField(
                     readOnly: true,
                     controller: dateController,
-                    decoration: InputDecoration(labelText: 'Date'),
+                    decoration: const InputDecoration(labelText: 'Birth date'),
                     onTap: () => _selectDate(context),
                   ),
                   
@@ -196,7 +190,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: false
                   ),
                   const SizedBox(height: 10),
-
 
                   //gender
                   DropdownButton<String>(
@@ -238,7 +231,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                   ),
 
-                
                   //space between
                   const SizedBox(height: 25),
 
@@ -253,7 +245,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         profilePictureTextController.text.isNotEmpty ||
                         dateController.text.isNotEmpty ||
                         bioTextController.text.isNotEmpty ||
-                        religionTextController.text.isNotEmpty){
+                        religionTextController.text.isNotEmpty || 
+                        confirmPasswordTextController.text.isNotEmpty){
+                          if(passwordTextController.text != confirmPasswordTextController.text){
+                            Fluttertoast.showToast(
+                            msg: "Passwords are not matching",
+                            toastLength: Toast.LENGTH_SHORT,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.black,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                          }else{
                           createUser();
                           setState(() {
                             widget.onTap;
@@ -262,6 +265,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             context,
                             MaterialPageRoute(builder: (context) => LoginScreen(onTap: () {})),
                           );
+                          }
                       }else{
                         Fluttertoast.showToast(
                             msg: "All fields are required",
@@ -291,7 +295,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(width: 4),
 
                       GestureDetector(
-
                         onTap: widget.onTap,
 
                         child: const Text(
@@ -306,7 +309,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ],
                   ),
                   const SizedBox(height: 20,)
-                  
                 ],
               )
             )

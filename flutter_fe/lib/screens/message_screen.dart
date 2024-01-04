@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/auth/db_service.dart';
 import 'package:flutter_fe/models/user_model.dart';
+import 'package:flutter_fe/models/verse_model.dart';
 import 'package:flutter_fe/utils/request_util.dart';
 import 'package:flutter_fe/widgets/custom_answer.dart';
 import 'package:flutter_fe/widgets/custom_bottom_app_bar.dart';
 import 'package:flutter_fe/widgets/custom_comentfield.dart';
 import 'package:flutter_fe/widgets/custom_post_button.dart';
+import 'package:flutter_fe/widgets/custom_recommendation.dart';
 import 'package:flutter_fe/widgets/custom_text_field.dart';
+import 'package:flutter_fe/widgets/custom_verse.dart';
 import 'package:logger/logger.dart';
 import 'dart:convert';
-
 
 class AnswerView {
   final String question;
@@ -25,7 +27,6 @@ class AnswerView {
   });
 }
 
-
 class MessageScreen extends StatefulWidget{
   static const routeName = '/message';
   const MessageScreen({super.key});
@@ -38,7 +39,9 @@ class _MessageScreenState extends State<MessageScreen> {
   final RequestUtil requestUtil = RequestUtil();
   late int userId = 0;
   late User user = User(userName: "xy", firstName: "xy", lastName: "xy", birthDate: "02.18", gender: true, profilePictureUrl: "xyz.com");
+  late List<Verse> verses = [];
 
+  @override
   void initState() {
     super.initState();
     fetchData();
@@ -67,8 +70,6 @@ class _MessageScreenState extends State<MessageScreen> {
     await fetchUser();
   }
 
-  
-
   //text controller
   final textController = TextEditingController();
   final commentController = TextEditingController();
@@ -85,6 +86,7 @@ class _MessageScreenState extends State<MessageScreen> {
         child: Column(
           children: [
             //suggested messages
+            
             if(!canSendMessage)
             const SizedBox(height:100),
             if(!canSendMessage)
@@ -113,7 +115,7 @@ class _MessageScreenState extends State<MessageScreen> {
                 ),
                 const SizedBox(width: 10,),
                 Transform.scale(
-                  scale: 0.7, // A méretarány szorzója, ahol 1 a normál méret
+                  scale: 0.7,
                   child: Switch.adaptive(
                     value: isAnonym,
                     onChanged: (bool value) {
@@ -127,24 +129,82 @@ class _MessageScreenState extends State<MessageScreen> {
                 )
               ]
             ),
-          
+
             if(!canSendMessage)
             Row(
               children: [
-                SizedBox(width: 55,),
+                const SizedBox(width: 50),
+                const Text("Verses: "),
+                if (verses.isNotEmpty)
+                  ...verses.map((verse) => CustomVerse(verse: verse)).toList(),
+              ],
+            ),
+            if(!canSendMessage)
+            const SizedBox(height: 10,),
+
+            if(!canSendMessage)
+            Row(
+              children: [
+                const SizedBox(width: 55),
                 MyPostButton(icon: const Icon(Icons.send),onTap: createNewPost, text: "Share the answer"),
-                SizedBox(width:10),
+                const SizedBox(width:10),
                 MyPostButton(icon: const Icon(Icons.refresh),onTap: askNewQuestion, text: "Ask a new question"),
               ],
             ),
-                       
-
+            
+            if(canSendMessage)
+            Expanded(
+              child: 
+              Column(children: [
+                const SizedBox(height:60),
+                const Text("Ask something from BiblAI!",
+                  style: TextStyle(fontSize: 30,
+                  fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  ),
+                Expanded(
+                  child:
+                  Align(alignment: Alignment.bottomCenter,
+                    child:
+                      Column(children: [
+                        const SizedBox(height: 220,),
+                        Row(
+                          children:[
+                            const SizedBox(width: 20,),
+                            CustomRecommendButton(
+                              onTap: () {
+                                textController.text = "Who is Jesus?";
+                              },
+                              text: "Who is Jesus?",
+                            ),  
+                            const SizedBox(width: 10,),
+                            CustomRecommendButton(
+                              onTap: (){textController.text = "What is the meaning of life?";},
+                              text: "What is the meaning of life?"),
+                          ]
+                        ),
+                        const SizedBox(height: 10,),
+                        Row(
+                          children:[
+                            const SizedBox(width: 20,),
+                            CustomRecommendButton(
+                              onTap: (){textController.text = "What is the third commandment?";},
+                              text: "What is the third commandment?"),
+                            const SizedBox(width: 10,),
+                            CustomRecommendButton(
+                              onTap: (){textController.text = "Is there life after death?";},
+                              text: "Is there life after death?"),
+                          ]
+                        )
+                      ]
+                    )
+                  )
+                )
+              ],)
+            ),
             //mytextfield, send button
             if(canSendMessage == true)
-            Expanded(child: 
-              Align(
-                alignment: Alignment.bottomCenter, // Alulra igazítja a widgetet
-                child:
+            
                 Padding(
                   padding: const EdgeInsets.all(25.0),
                   child: Row(
@@ -158,14 +218,11 @@ class _MessageScreenState extends State<MessageScreen> {
                       ),
                       
                       //send button
-                      //TODO: megirni a sendMessaget
                       IconButton(onPressed: sendMessage, icon: const Icon(Icons.send_rounded))
                     ],
                   ),
                 )
-              )
-            )
-            
+                    
           ]
         ),
       ),
@@ -177,6 +234,8 @@ class _MessageScreenState extends State<MessageScreen> {
 
     if (messageText.isNotEmpty) {
       setState(() {
+        verses.add(Verse(book: "Psalm", chapter: "56", verse: "2",link: "https://www.bible.com/bible/1/.12.3.kjv"));
+        verses.add(Verse(book: "Psalm", chapter: "1", verse: "10", link: "https://www.bible.com/bible/1/.12.3.kjv"));
         answer.add(AnswerView(question: textController.text,answer: "Good question",content: "okay", anonym: isAnonym));
         canSendMessage = false;
       });
@@ -188,6 +247,9 @@ class _MessageScreenState extends State<MessageScreen> {
       if(answer.isNotEmpty){
         answer.removeLast();
       }
+      while(verses.isNotEmpty){
+        verses.removeLast();
+      }
       textController.clear();
       commentController.clear();
       canSendMessage = true;
@@ -198,8 +260,7 @@ class _MessageScreenState extends State<MessageScreen> {
   Future<void> createPost() async {
     try {
       var date = DateTime.now();
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.postCreatePost(textController.text, "Good question", commentController.text, isAnonym, userId, date.toIso8601String());
+      await requestUtil.postCreatePost(textController.text, "Good question", commentController.text, isAnonym, userId, date.toIso8601String(),verses);
 
     } catch (error) {
       Logger().e('Error: $error');
