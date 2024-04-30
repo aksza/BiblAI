@@ -2,13 +2,23 @@ import { axiosGet, axiosPost, axiosPut, axiosDelete } from "./fetchMethods";
 
 import { Post as PostType } from "../../models/PostModel"
 import { RegisterFormModel } from "../../models/RegisterFormModel";
+import { VersType } from "../../models/Answer";
 
 
 // ? GET REQUESTS
 
-export const getHome = async (userId: number) => {
+export const getHomePublic = async () => {
     try {
-        const response = await axiosGet(`${process.env.REACT_APP_API_URL}/Post/${userId}`)
+        const response = await axiosGet(`${process.env.REACT_APP_API_URL}/Post/public`)
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getHomePrivate = async () => {
+    try {
+        const response = await axiosGet(`${process.env.REACT_APP_API_URL}/Post/private`)
         return response;
     } catch (error) {
         throw error;
@@ -90,6 +100,18 @@ export const registerUser = async (data: RegisterFormModel) => {
     }
 }
 
+export const loginUser = async (userName: string, password: string) => {
+    try {
+        const response = await axiosPost(`${process.env.REACT_APP_API_URL}/User/login`, {
+            userName: userName,
+            password: password,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const askQuestion = async (question: string, length: string, num_verses: number) => {
     try {
         const response = await axiosPost(`${process.env.REACT_APP_API_URL}/Post/get_answer`, {
@@ -103,14 +125,16 @@ export const askQuestion = async (question: string, length: string, num_verses: 
     }
 }
 
-export const postCreate = async (question: string, answer: string, anonym: boolean, userId: number, date: string) => {
+export const postCreate = async (question: string, answer: string, content: string, anonym: boolean, userId: number, date: string, verses: VersType[]) => {
     try {
         const response = await axiosPost(`${process.env.REACT_APP_API_URL}/Post/create`, {
-            question: question,
             answer: answer,
+            question: question,
+            content: content,
             anonym: anonym,
             userId: userId,
             date: date,
+            verses: verses,
         });
         return response;
     } catch (error) {

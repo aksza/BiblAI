@@ -1,38 +1,61 @@
-import {useQuery} from 'react-query'
+import { useQuery } from 'react-query'
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Post } from '../components/Post';
 import { Comment as CommentType } from '../../models/CommentModel'
-import { getHome } from '../services/endpointFetching';
+import { User as UserType } from '../services/userContext';
+import { getHomePrivate, getHomePublic } from '../services/endpointFetching';
+import { useUser } from '../services/userContext';
 
-import { Post as PostType } from './../../models/PostModel'
+import { Post as PostType} from './../../models/PostModel'
 import '../styles/home.css'
 
 
-export const Home = () => {
-  const [posts, setPosts] = useState<PostType[]>([] as PostType[]);
-  const { userId } = useParams();
+export interface HomeModel {
+  userId: number;
+  userName: string;
+  profilePictureUrl: string;
+  posts: PostType[];
+}
 
-  const handleLike = (postId : number, like : number, dislike : number) => {
-    setPosts(prevPosts => {
-      return prevPosts.map(post => {
+export interface HomeProps {
+  searchTerm: string;
+}
+
+export const Home = ({ searchTerm }: HomeProps) => {
+  const user = useUser();
+  const [publicHomeData, setPublicHomeData] = useState<PostType[]>([]);
+  const [privateHomeData, setPrivateHomeData] = useState<HomeModel> ({
+    userId: 0,
+    userName: '',
+    profilePictureUrl: '',
+    posts: []
+  });
+
+  const handleLike = (postId: number, like: number, dislike: number) => {
+    setPrivateHomeData((prevHomeData: HomeModel) => {
+      const updatedPosts = prevHomeData.posts.map((post: PostType) => {
         if (post.id === postId) {
           return {
             ...post,
             likedByUser: like === 0 ? post.likedByUser : !post.likedByUser,
             dislikedByUser: dislike === 0 ? post.dislikedByUser : !post.dislikedByUser,
-            numLikes : post.numLikes + like,
-            numDislikes : post.numDislikes + dislike
+            numLikes: post.numLikes + like,
+            numDislikes: post.numDislikes + dislike
           } as PostType;
         }
         return post;
       });
+
+      return {
+        ...prevHomeData,
+        posts: updatedPosts
+      };
     });
   }
 
-  const handleCommentLike = (postId : number, commentId : number, like : number, dislike : number) => {
-    setPosts(prevPosts => {
-      return prevPosts.map(post => {
+  const handleCommentLike = (postId: number, commentId: number, like: number, dislike: number) => {
+    setPrivateHomeData((prevHomeData: HomeModel) => {
+      const updatedPosts = prevHomeData.posts.map(post => {
         if (post.id === postId) {
           return {
             ...post,
@@ -42,8 +65,8 @@ export const Home = () => {
                   ...comment,
                   likedByUser: like === 0 ? comment.likedByUser : !comment.likedByUser,
                   dislikedByUser: dislike === 0 ? comment.dislikedByUser : !comment.dislikedByUser,
-                  numLikes : comment.numLikes + like,
-                  numDislikes : comment.numDislikes + dislike
+                  numLikes: comment.numLikes + like,
+                  numDislikes: comment.numDislikes + dislike
                 } as CommentType;
               }
               return comment;
@@ -52,54 +75,82 @@ export const Home = () => {
         }
         return post;
       });
+
+      return {
+        ...prevHomeData,
+        posts: updatedPosts
+      };
     });
   }
 
-  const handleComment = (postId : number, comment : string) => {
-    setPosts(prevPosts => {
-      return prevPosts.map(post => {
+  const handleComment = (postId: number, comment: string) => {
+    setPrivateHomeData((prevHomeData: HomeModel) => {
+      const updatedPosts = prevHomeData.posts.map(post => {
+        const newComment = {
+          id: 0,
+          userId: user.user.id ?? 0,
+          userName: user.user.userName ?? '',
+          profilePictureUrl: user.user.profilePictureUrl ?? '',
+          content: comment,
+          dateCreated: new Date().toISOString(),
+          likedByUser: false,
+          dislikedByUser: false,
+          numLikes: 0,
+          numDislikes: 0
+        } as CommentType;
         if (post.id === postId) {
           return {
             ...post,
-            comments: [
-              ...post.comments ?? [],
-              {
-                id: 0,
-                userId: 1,
-                userName: 'danika',
-                profilePictureUrl: post.profilePictureUrl,
-                content: comment,
-                date: new Date().toISOString(),
-                likedByUser: false,
-                dislikedByUser: false,
-                numLikes: 0,
-                numDislikes: 0
-              } as CommentType
-            ]
+            comments: [...post.comments ?? [], newComment]
           } as PostType;
         }
         return post;
       });
+
+      return {
+        ...prevHomeData,
+        posts: updatedPosts
+      };
     });
   }
 
-  const { data, isLoading, isError, refetch } = useQuery(['posts', userId ?? ''], () => getHome(parseInt(userId ?? '')), {
-    onSuccess: (data: PostType[]) => {
-      setPosts(data);
+  const { data, isLoading, isError, refetch } = useQuery([], () => {
+    return localStorage.getItem('token') ? getHomePrivate() : getHomePublic();
+  }, {
+    onSuccess: (data) => {
+      if(localStorage.getItem('token')) {
+         setPrivateHomeData(data as HomeModel) 
+         user.updateUser({
+          id: (data as HomeModel).userId,
+          userName: (data as HomeModel).userName,
+          profilePictureUrl: (data as HomeModel).profilePictureUrl
+        } as UserType);
+        localStorage.setItem('userId', (data as HomeModel).userId.toString());
+        localStorage.setItem('userName', (data as HomeModel).userName);
+        localStorage.setItem('profilePictureUrl', (data as HomeModel).profilePictureUrl);
+      } else { 
+        setPublicHomeData(data as PostType[])
+      }
     }
   });
 
-
-  
   return (
     <div className="Home">
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error fetching data</div>}
+
       <div>
-        {posts.map((post: PostType) => (
-          console.log('asd'),
-          <Post key={post.id} post={post} handleLike={handleLike} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
-        ))}
+        {localStorage.getItem('token') ? 
+          privateHomeData.posts
+            .filter((post: PostType) => post.question.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map((post: PostType) => (
+              <Post key={post.id} post={post} handleLike={handleLike} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
+            )) : 
+          publicHomeData
+          .filter((post: PostType) => post.question.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map((post: PostType) => (
+              <Post key={post.id} post={post} handleLike={handleLike} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
+            ))}
       </div>
     </div>
   );

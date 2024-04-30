@@ -1,13 +1,6 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/auth/login_or_register.dart';
-import 'package:flutter_fe/utils/request_util.dart';
-import 'home_screen.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-
-// import 'package:flutter_fe/models/splash_model.dart';
-
 
 class SplashScreenPage extends StatelessWidget {
   static const routeName = '/';
@@ -30,14 +23,14 @@ class SplashScreenPage extends StatelessWidget {
           },
           child: Image.asset(
             'assets/images/logo.png',
-            // width: 250,
-            // height: 250,
           ),
         ),
       ),
-      nextScreen: const HomeScreen(),
+
+      
+      nextScreen: LoginOrRegister(),
+      
       splashTransition: SplashTransition.fadeTransition,
-      // pageTransitionType: PageTransitionType.scale,
     );
   }
 }

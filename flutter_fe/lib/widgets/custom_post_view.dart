@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fe/models/post_model.dart';
 import 'package:flutter_fe/models/user_model.dart';
+import 'package:flutter_fe/models/verse_model.dart';
 import 'package:flutter_fe/screens/post_screen.dart';
 import 'package:flutter_fe/screens/profile_screen.dart';
+import 'package:flutter_fe/widgets/custom_verse_button.dart';
 import 'package:flutter_fe/widgets/dislike_button.dart';
 import 'package:flutter_fe/widgets/like_button.dart';
 import 'package:flutter_fe/utils/request_util.dart';
@@ -12,11 +14,13 @@ import 'package:logger/logger.dart';
 class CustomPostView extends StatefulWidget {  
   final PostInfo post;
   final User user;
+  final int userId;
 
   const CustomPostView({
     Key? key,
     required this.post,
-    required this.user
+    required this.user,
+    required this.userId,
   }): super(key:key);
 
 
@@ -31,6 +35,8 @@ class _CustomPostView extends State<CustomPostView>{
   final RequestUtil requestUtil = RequestUtil();
   int numLikes = 0;
   int numDisLikes = 0;
+  bool isAnonym = false;
+  List<Verse> verses = [];
 
   @override
   void initState(){
@@ -38,7 +44,9 @@ class _CustomPostView extends State<CustomPostView>{
     isLiked = widget.post.likedByUser;
     isDisliked = widget.post.dislikedByUser;
     numLikes = widget.post.numLikes;
-    numLikes = widget.post.numDisLikes;
+    numDisLikes = widget.post.numDisLikes;
+    isAnonym = widget.post.anonym;
+    verses = widget.post.verses;
   }
 
   //toggle like
@@ -78,8 +86,8 @@ class _CustomPostView extends State<CustomPostView>{
       updatePostLike();
       setState(() {
         isLiked = !isLiked;
-        numDisLikes++;
         numLikes--;
+        numDisLikes++;
       }); 
     }
     else if(isDisliked){
@@ -99,8 +107,7 @@ class _CustomPostView extends State<CustomPostView>{
 
   Future<void> likePost() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.postLikePost(isLiked,2,widget.post.id);
+      await requestUtil.postLikePost(isLiked,widget.userId,widget.post.id);
 
     } catch (error) {
       Logger().e('Error: $error');
@@ -109,8 +116,7 @@ class _CustomPostView extends State<CustomPostView>{
 
   Future<void> unlikePost() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.deletePostUnlike(2,widget.post.id);
+      await requestUtil.deletePostUnlike(widget.userId,widget.post.id);
 
     } catch (error) {
       Logger().e('Error: $error');
@@ -119,8 +125,7 @@ class _CustomPostView extends State<CustomPostView>{
 
   Future<void> dislikePost() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.postLikePost(!isDisliked,2,widget.post.id);
+      await requestUtil.postLikePost(!isDisliked,widget.userId,widget.post.id);
 
     } catch (error) {
       Logger().e('Error: $error');
@@ -129,12 +134,17 @@ class _CustomPostView extends State<CustomPostView>{
 
   Future<void> updatePostLike() async{
     try{
-      await requestUtil.putPostUpdateLike(2,widget.post.id);
+      await requestUtil.putPostUpdateLike(widget.userId,widget.post.id);
     } catch(error){
       Logger().e('Error: $error');
     }
   }
 
+  void refreshPostView() {
+    setState(() {
+      
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return 
@@ -142,7 +152,7 @@ class _CustomPostView extends State<CustomPostView>{
       onTap: (){
         Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PostScreen(post: widget.post,user: widget.user)),
+                  MaterialPageRoute(builder: (context) => PostScreen(post: widget.post,user: widget.user,userId: widget.userId,)),
                 );      
       },
       child: Container(
@@ -173,7 +183,9 @@ class _CustomPostView extends State<CustomPostView>{
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.contain,
-                      image: NetworkImage(widget.post.profilePictureUrl),
+                      image: isAnonym
+                            ? const NetworkImage("https://i1.sndcdn.com/avatars-000179405104-pcjko5-t240x240.jpg") // Ide tedd be az anonym ikon elérési útvonalát
+                            : NetworkImage(widget.post.profilePictureUrl),
                     ),
                     shape: BoxShape.circle,
                     color: Colors.white,
@@ -196,21 +208,38 @@ class _CustomPostView extends State<CustomPostView>{
                     },
                     child:
                       Text(
-                        widget.post.userName,
-                        style: TextStyle(
-                          color: Colors.grey[500],
+                         isAnonym ? "Anonym" : widget.post.userName,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                   ),
                   const SizedBox(height: 10),
                   Text(widget.post.question),
                   const SizedBox(height: 10),
+                  const Text("Answer:",
+                    style: TextStyle(
+                    color: Colors.grey),),
+                  const SizedBox(height: 5,),
                   Text(widget.post.answer),
                 ],
               ),
             ),
           ],
         ),
+        const SizedBox(height: 20,),
+        Row(
+              children: [
+                const SizedBox(width: 60),
+                const Text("Verses: ",
+                  style: TextStyle(
+                  color: Colors.grey),
+                  ),
+                if (verses.isNotEmpty)
+                  ...verses.map((verse) => CustomVerseButton(verse: verse)).toList(),
+              ],
+            ),
         const SizedBox(height: 20),
         Row(
           children: [
@@ -222,7 +251,6 @@ class _CustomPostView extends State<CustomPostView>{
             ),
 
             Text(
-              //int.parse(i.toString)
               numLikes.toString(),
               style: const TextStyle(
                 color: Colors.black,

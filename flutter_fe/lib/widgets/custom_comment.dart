@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fe/models/comment_model.dart';
 import 'package:flutter_fe/models/user_model.dart';
 import 'package:flutter_fe/screens/profile_screen.dart';
+import 'package:flutter_fe/widgets/custom_post_view.dart';
 import 'package:flutter_fe/widgets/dislike_button.dart';
 import 'package:flutter_fe/widgets/like_button.dart';
 import 'package:flutter_fe/utils/request_util.dart';
@@ -11,11 +12,13 @@ import 'package:logger/logger.dart';
 class CustomCommentView extends StatefulWidget {  
   final Comment comment;
   final User user;
+  final int userId;
 
   const CustomCommentView({
     Key? key,
     required this.comment,
-    required this.user
+    required this.user,
+    required this.userId,
   }): super(key:key);
 
 
@@ -97,8 +100,7 @@ class _CustomCommentView extends State<CustomCommentView>{
 
   Future<void> likeComment() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.postCommentLike(isLiked,2,widget.comment.id);
+      await requestUtil.postCommentLike(isLiked,widget.userId,widget.comment.id);
 
     } catch (error) {
       Logger().e('Error: $error');
@@ -107,8 +109,7 @@ class _CustomCommentView extends State<CustomCommentView>{
 
   Future<void> unlikeComment() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.deleteCommentUnlike(2,widget.comment.id);
+      await requestUtil.deleteCommentUnlike(widget.userId,widget.comment.id);
 
     } catch (error) {
       Logger().e('Error: $error');
@@ -117,8 +118,7 @@ class _CustomCommentView extends State<CustomCommentView>{
 
   Future<void> dislikeComment() async {
     try {
-    //TODO: atirni ezt a userid-t, hogy a usernek az id-ja legyen
-      await requestUtil.postCommentLike(!isDisliked,2,widget.comment.id);
+      await requestUtil.postCommentLike(!isDisliked,widget.userId,widget.comment.id);
 
     } catch (error) {
       Logger().e('Error: $error');
@@ -127,7 +127,22 @@ class _CustomCommentView extends State<CustomCommentView>{
 
   Future<void> updateCommentLike() async{
     try{
-      await requestUtil.putCommentUpdateLike(2,widget.comment.id);
+      await requestUtil.putCommentUpdateLike(widget.userId,widget.comment.id);
+    } catch(error){
+      Logger().e('Error: $error');
+    }
+  }
+
+  void deleteComment(){
+    fdeleteComment();
+    setState(() {
+      
+    });
+  }
+
+  Future<void> fdeleteComment() async{
+    try{
+      await requestUtil.deleteCommentById(widget.comment.id);
     } catch(error){
       Logger().e('Error: $error');
     }
@@ -154,6 +169,7 @@ class _CustomCommentView extends State<CustomCommentView>{
                         MaterialPageRoute(builder: (context) => ProfileScreen(userId: widget.comment.userId)),
               );      
             },
+              
             child:
               Align(
                 alignment: Alignment.topLeft,
@@ -187,8 +203,9 @@ class _CustomCommentView extends State<CustomCommentView>{
                     child:
                       Text(
                         widget.comment.userName,
-                        style: TextStyle(
-                          color: Colors.grey[500],
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                   ),
@@ -197,6 +214,41 @@ class _CustomCommentView extends State<CustomCommentView>{
                 ],
               ),
             ),
+
+            if(widget.userId == widget.comment.userId)
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                // Törlés előtt megerősítő párbeszédpanel megjelenítése
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Törlés megerősítése"),
+                      content: Text("Biztosan törölni szeretnéd a kommentet?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            // Nem gombra kattintva bezárás
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("Nem"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Igen gombra kattintva a törlési funkció hívása és bezárás
+                            deleteComment();
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("Igen"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+
           ],
         ),
         const SizedBox(height: 20),

@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_fe/screens/home_screen.dart';
 import 'package:flutter_fe/widgets/custom_button.dart';
 import 'package:flutter_fe/widgets/custom_text_field.dart';
+import 'package:flutter_fe/auth/auth_service.dart';
+import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 class LoginScreen extends StatefulWidget{
   static const routeName = '/login';
   final Function()? onTap;
 
-  const LoginScreen({super.key, required this.onTap()});
+  LoginScreen({super.key, required this.onTap()});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -15,8 +21,9 @@ class LoginScreen extends StatefulWidget{
 class _LoginScreenState extends State<LoginScreen>{
 
   //text editing controllers
-  final emailTextController = TextEditingController();
+  final userNameTextController = TextEditingController();
   final passwordTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -50,10 +57,10 @@ class _LoginScreenState extends State<LoginScreen>{
 
                 //space between
                 const SizedBox(height: 25),
-                //email textfield
+                //username textfield
                 MyTextField(
-                  controller: emailTextController,
-                  hintText: 'Email',
+                  controller: userNameTextController,
+                  hintText: 'Username',
                   obscureText: false
                 ),
 
@@ -71,9 +78,44 @@ class _LoginScreenState extends State<LoginScreen>{
                 const SizedBox(height: 10),
 
                 //sign in button
-                MyButton(
-                  onTap: (){},
-                  text: 'Sign In'
+                Consumer<AuthService>(
+                  builder: (context, auth,child) {
+                    return MyButton(
+                      onTap: () async {
+                        if(userNameTextController.text.isEmpty || passwordTextController.text.isEmpty){
+                          Logger().i("all fields are required");
+                          Fluttertoast.showToast(
+                            msg: "All fields are required",
+                            toastLength: Toast.LENGTH_SHORT,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.black,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                        }
+                        bool loginSuccessful = await auth.login(userNameTextController.text, passwordTextController.text);
+
+                        if (loginSuccessful) {
+                          // Only navigate to HomeScreen if login is successful
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const HomeScreen()),
+                          );
+                        } else {
+                          Logger().i("Login failed");
+                          Fluttertoast.showToast(
+                            msg: "Incorrect username or password",
+                            toastLength: Toast.LENGTH_SHORT,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.black,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                        }
+                      },
+                      text: 'Sign In'
+                    );
+                  }
                 ),
 
                 const SizedBox(height: 25),

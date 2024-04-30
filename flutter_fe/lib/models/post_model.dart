@@ -22,7 +22,6 @@ class PostInfo{
   late String userName;
   late String question;
   late String answer;
-  // late List<Verse>? verses;
   late int userId;
   late String profilePictureUrl;
   late int numLikes;
@@ -33,6 +32,7 @@ class PostInfo{
   late String date;
   late bool likedByUser;
   late bool dislikedByUser;
+  late List<Verse> verses = [];
 
   PostInfo({
     required this.id,
@@ -49,6 +49,7 @@ class PostInfo{
     required this.numDisLikes,
     required this.likedByUser,
     required this.dislikedByUser,
+    required this.verses
   });
   
   Map<String,dynamic> toMap(){
@@ -64,9 +65,10 @@ class PostInfo{
     map["commentsNum"] = commentsNum;
     map["comments"] = comments?.map((comment) => comment.toMap()).toList();
     map["numLikes"] = numLikes;
-    map["numDisLikes"] = numDisLikes;
+    map["numDislikes"] = numDisLikes;
     map["likedByUser"] = likedByUser;
     map["dislikedByUser"] = dislikedByUser;
+    map["verses"] = verses.map((verses) => verses.toMap()).toList();
     return map;
   }
 
@@ -81,13 +83,13 @@ class PostInfo{
     this.profilePictureUrl = o["profilePictureUrl"] as String;
     this.date = o["date"] as String;
     this.commentsNum = o["commentsNum"] as int;
-    this.numLikes = o["numLikes"] as int? ?? 0; 
-    this.numDisLikes = o["numDisLikes"] as int? ?? 0; 
+    this.numLikes = o["numLikes"] as int; 
+    this.numDisLikes = o["numDislikes"] as int; 
     this.likedByUser = o["likedByUser"] as bool? ?? false; 
     this.dislikedByUser = o["dislikedByUser"] as bool? ?? false; 
 
-    // Ellenőrizd, hogy a "comments" nem null, és ha nem, akkor alakítsd át a listát
-    this.comments = o["comments"] != null ? List<Comment>.from(o["comments"].map((comment) => Comment.fromJson(comment))) : null;
+    this.comments = o["comments"] != null ? List<Comment>.from(o["comments"].map((comment) => Comment.fromJson(comment))) : [];
+    this.verses = o["verses"] != null ? List<Verse>.from(o["verses"].map((vers) => Verse.fromJson(vers))) : [];
   }
 
 }

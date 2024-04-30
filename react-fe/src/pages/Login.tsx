@@ -1,55 +1,56 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { loginUser } from '../services/endpointFetching';
+import { Button, Link, TextField } from '@mui/material';
+import '../styles/login.css';
 
-const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+interface LoginFormModel {
+  userName: string;
+  password: string;
+}
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
+export const Login = () => {
+  const [loginForm, setLoginForm] = useState<LoginFormModel>({
+    userName: '',
+    password: '',
+  });
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+  const [token, setToken] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    // Make the post request here
-    fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the response data
-        console.log(data);
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error(error);
-      });
-  };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const token = await loginUser(loginForm.userName, loginForm.password);
+    if (token) {
+      setToken(token as string);
+      localStorage.setItem('token', token as string);
+      window.location.href = '/home';
+    } else {
+      setErrorMessage('Incorrect username or password');
+    }
+  }
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="Login">
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input type="email" value={email} onChange={handleEmailChange} />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input type="password" value={password} onChange={handlePasswordChange} />
-        </div>
-        <button type="submit">Login</button>
+        <TextField
+          id="outlined-basic"
+          label="Username"
+          variant="outlined"
+          onChange={(e) => setLoginForm({ ...loginForm, userName: e.target.value })}
+        />
+        <TextField
+          id="outlined-basic"
+          label="Password"
+          variant="outlined"
+          type="password"
+          onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+        />
+        <Button variant="contained" type="submit">
+          Login
+        </Button>
       </form>
+      {errorMessage && <p>{errorMessage}</p>}
+      <Link href="/register">Register</Link>
     </div>
   );
 };
-
-export default Login;

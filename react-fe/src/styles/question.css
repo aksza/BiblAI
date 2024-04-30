@@ -1,0 +1,43 @@
+.Question {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.ask_question_area {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    
+}
+
+.ask_question_area textarea {
+    width: 80%;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 10px;
+}
+
+.precision_area {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+}
+
+.suggestion_area {
+    width: 60%;
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+    gap: 10px;
+}

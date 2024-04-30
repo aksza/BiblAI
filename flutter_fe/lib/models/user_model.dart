@@ -1,17 +1,5 @@
 import 'package:flutter_fe/models/post_model.dart';
 
-// set pOSTS(List<PostInfo>? newPosts){
-//     posts = newPosts;
-//   }
-
-//   void addPost(PostInfo newPost){
-//     if(posts == null){
-//       posts = [newPost];
-//     }
-//     else{
-//       posts!.add(newPost);
-//     }
-//   }
 
 class User{
   late String userName;
@@ -37,29 +25,6 @@ class User{
     required this.profilePictureUrl,
     this.posts
   });
-
-  // String get userNAME => userName;
-  // String get firstNAME => firstName;
-  // String? get profilePictrureURL => profilePictureUrl;
-  // String get lastNAME => lastName; 
-  // String get birthDATE => birthDate;
-  // bool get gENDER => gender;
-  // bool? get mARRIED => married;
-  // String? get bIO => bios;
-  // String? get rELIGION => religion;
-  // List<Post>? get pOSTS => posts;
-
-  set profilePictureURL(String newURL){
-    profilePictureUrl = newURL;
-  }
-
-  set bIO(String? newBio){
-    bios = newBio;
-  }
-  
-  set pOSTS(List<PostInfo>? newPosts){
-    posts = newPosts;
-  }
 
   Map<String,dynamic> toMap(){
     var map=<String,dynamic>{};

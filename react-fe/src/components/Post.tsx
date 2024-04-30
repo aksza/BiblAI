@@ -1,10 +1,8 @@
-import { Post as PostType} from '../../models/PostModel'
-import { Users } from '../../models/UserModel'
-import {Link} from 'react-router-dom';
+import { Post as PostType } from '../../models/PostModel'
 import '../styles/post_card.css'
 import '../styles/comment.css'
 import React, { useState } from 'react';
-import { Button, Dialog, DialogContent, DialogTitle, setRef } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogTitle, setRef, makeStyles } from '@mui/material';
 import { PostCard } from './PostCard';
 import { CommentSection } from './CommentSection';
 
@@ -24,8 +22,8 @@ export const Post: React.FC<PostProps> = ({post, handleLike, handleCommentLike, 
   return (
     <div className="Post">
       <PostCard post={post} handlePostModalOpen={handlePostModalOpen} handleLike={handleLike} />
-      <Dialog open={postModalOpen} onClose={handlePostModalClose} maxWidth="md" fullWidth>
-        <DialogContent>
+      <Dialog open={postModalOpen} onClose={handlePostModalClose} maxWidth="md" fullWidth style={{ padding: 0 }}>
+        <DialogContent style={{ padding: 0, fontFamily: 'Kumbh Sans' }}>
           <PostCard post={post} handlePostModalOpen={handlePostModalOpen} handleLike={handleLike}/>
           <CommentSection post={post} handleCommentLike={handleCommentLike} handleComment={handleComment}/>
         </DialogContent>

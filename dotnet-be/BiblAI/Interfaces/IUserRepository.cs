@@ -4,11 +4,12 @@ namespace BiblAI.Interfaces
 {
     public interface IUserRepository
     {
-        ICollection<User> GetUsers();
-        User GetUserById(int id);
-        bool CreateUser(User user);
-        bool UpdateUser(User user);
-        bool DeleteUser(User user);
-        bool Save();
+        Task<ICollection<User>> GetUsers();
+        Task<User> GetUserById(int id);
+        Task<User> GetUserByUserName(string userName);
+        Task<bool> CreateUser(User user);
+        Task<bool> UpdateUser(User user);
+        Task<bool> DeleteUser(User user);
+        Task<bool> Save();
     }
 }

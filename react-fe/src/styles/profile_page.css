@@ -1,14 +1,18 @@
 .Profile {
-  border: 2px solid black;
+  /* border: 2px solid black; */
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
 .user_info {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: white;
 }
 
 .bios_part {
@@ -20,9 +24,18 @@
   flex-direction: column;
 }
 
+.right_bios_part {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .bios_part img {
   width: 70px;
   height: 70px;
+  border-radius: 50%;
 }
 
 .buttons {
@@ -39,7 +52,7 @@
   height: 40px;
   border-radius: 5px;
   border: none;
-  background-color: #f5f5f5;
+  background-color: #fafafa;
   color: #000;
 }
 

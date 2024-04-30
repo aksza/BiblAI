@@ -14,6 +14,7 @@ namespace BiblAI.Dto
         public DateTime Date { get; set; }
         public int CommentsNum { get; set;  } 
         public ICollection<CommentDto> Comments { get; set; }
+        public ICollection<VerseDto> Verses { get; set; }
         public int NumLikes { get; set; }
         public int NumDislikes { get; set; }
         public bool LikedByUser { get; set; }

@@ -42,10 +42,10 @@ class Comment{
       userId: json['userId'] as int,
       userName: json['userName'] as String,
       profilePictureUrl: json['profilePictureUrl'] as String,
-      numLikes: json['numLikes'] as int? ?? 0, // Ellenőrizd, hogy nem null
-      numDisLikes: json['numDisLikes'] as int? ?? 0, // Ellenőrizd, hogy nem null
-      likedByUser: json['likedByUser'] as bool? ?? false, // Ellenőrizd, hogy nem null
-      dislikedByUser: json['dislikedByUser'] as bool? ?? false, // Ellenőrizd, hogy nem null
+      numLikes: json['numLikes'] as int, 
+      numDisLikes: json['numDislikes'] as int, 
+      likedByUser: json['likedByUser'] as bool? ?? false, 
+      dislikedByUser: json['dislikedByUser'] as bool? ?? false, 
     );
   }
   

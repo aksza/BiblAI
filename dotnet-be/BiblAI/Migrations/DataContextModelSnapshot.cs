@@ -180,9 +180,13 @@ namespace BiblAI.Migrations
                     b.Property<bool>("Married")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("ProfilePictureUrl")
                         .IsRequired()
@@ -213,14 +217,20 @@ namespace BiblAI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Chapter")
-                        .HasColumnType("int");
+                    b.Property<string>("Chapter")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Vers")
-                        .HasColumnType("int");
+                    b.Property<string>("Vers")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

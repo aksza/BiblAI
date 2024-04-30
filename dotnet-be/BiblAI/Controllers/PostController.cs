@@ -4,148 +4,254 @@ using BiblAI.Interfaces;
 using BiblAI.Models;
 using BiblAI.Repository;
 using BiblAI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using static System.Net.WebRequestMethods;
 
 namespace BiblAI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PostController : Controller
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILikeRepository _likeRepository;
+        private readonly ICommentRepository _commentRepository;
+        private readonly IVerseRepository _verseRepository;
         private readonly FastApiService _fastApiService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper, FastApiService fastApiService)
+        public PostController(IPostRepository postRepository, IUserRepository userRepository, ILikeRepository likeRepository, IMapper mapper, FastApiService fastApiService, ICommentRepository commentRepository, IHttpContextAccessor httpContextAccessor, IVerseRepository verseRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _likeRepository = likeRepository;
             _mapper = mapper;
             _fastApiService = fastApiService;
+            _commentRepository = commentRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _verseRepository = verseRepository;
         }
 
-        [HttpGet("{userId}")]
-        public IActionResult GetPosts(int userId) {
-            var posts = _postRepository.GetPosts();
-            var postDtos = _mapper.Map<List<PostDto>>(posts);
-            foreach(var post in postDtos)
+        [HttpGet("public")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPosts() {
+            try
             {
-                post.LikedByUser = _likeRepository.PostLikedByUser(userId, post.Id);
-                post.DislikedByUser = _likeRepository.PostDislikedByUser(userId, post.Id);
-                foreach(var comment in post.Comments)
-                {
-                    comment.LikedByUser = _likeRepository.CommentLikedByUser(userId, comment.Id);
-                    comment.DislikedByUser = _likeRepository.CommentDislikedByUser(userId, comment.Id);
-                }
-            }
+                var posts = await _postRepository.GetPosts();
+                var postDtos = _mapper.Map<List<PostDto>>(posts);
 
-            return Ok(postDtos);
+                return Ok(postDtos);
+            }
+            catch(Exception ex) 
+            { 
+                return StatusCode(500, ex.Message);
+            }
         }
+
+        [HttpGet("private")]
+        public async Task<IActionResult> GetPostsWithUser()
+        {
+            try
+            {
+                var posts = await _postRepository.GetPosts();
+                var postDtos = _mapper.Map<List<PostDto>>(posts);
+                var userString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                int.TryParse(userString, out int userId);
+                var userName = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+                var userPicture = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Uri);
+
+                var response = new
+                {
+                    UserId = userId,
+                    UserName = userName,
+                    ProfilePictureUrl = userPicture,
+                    Posts = postDtos
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("{search}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPosts(string search)
+        {
+            try
+            {
+                var posts = await _postRepository.SearchPosts(search);
+                var postDtos = _mapper.Map<List<PostDto>>(posts);
+
+                return Ok(postDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpPost("get_answer")]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateAnswer([FromBody] AiQuestion question)
         {
-            AiAnswer answer = await _fastApiService.GetAnswer(question);
+            try
+            {
+                AiAnswer answer = await _fastApiService.GetAnswer(question);
 
-            // Handle the result as needed
-            return Ok(answer);
+                return Ok(answer);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         } 
 
         [HttpPost("create")]
-        public IActionResult CreatePost([FromBody] PostCreateDto postDto)
+        public async Task<IActionResult> CreatePost([FromBody] PostCreateDto postDto)
         {
-            if (postDto == null)
-                return BadRequest(ModelState);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var postMap = _mapper.Map<Post>(postDto);
-            postMap.User = _userRepository.GetUserById(postDto.UserId);
-
-            if (!_postRepository.CreatePost(postMap))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong while savin");
-                return StatusCode(500, ModelState);
-            }
+                if (postDto == null)
+                    return BadRequest(ModelState);
 
-            return Ok("Successfully created");
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var postMap = _mapper.Map<Post>(postDto);
+
+                if (!await _postRepository.CreatePost(postMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving post");
+                    return StatusCode(500, ModelState);
+                }
+                if (postDto.Content != null)
+                {
+                    var commentMap = _mapper.Map<Comment>(postDto);
+                    commentMap.PostId = postMap.Id;
+
+                    if (!await _commentRepository.CreateComment(commentMap))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving comment");
+                        return StatusCode(500, ModelState);
+                    }
+                }
+
+                foreach(var verseDto in postDto.Verses)
+                {
+                    var verseMap = _mapper.Map<Verse>(verseDto);
+                    verseMap.PostId = postMap.Id;
+                    if (!await _verseRepository.CreateVerse(verseMap))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving verse");
+                        return StatusCode(500, ModelState);
+                    }
+                }
+
+                return Ok("Successfully created");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("like")]
-        public IActionResult LikePost([FromBody] LikeCreateDto likeDto)
+        public async Task<IActionResult> LikePost([FromBody] LikeCreateDto likeDto)
         {
-            if (likeDto == null)
-                return BadRequest(ModelState);
-
-            var like = _likeRepository.GetLikes()
-                .Where(l => l.UserId == likeDto.UserId && (l.PostId != null && l.PostId == likeDto.CommentId))
-                .FirstOrDefault();
-
-            if (like != null)
+            try
             {
-                ModelState.AddModelError("", "User already exists");
-                return StatusCode(422, ModelState);
+                if (likeDto == null)
+                    return BadRequest(ModelState);
+
+                var like = await _likeRepository.GetPostLikeByIds(likeDto.UserId, likeDto.CommentId);
+
+                if (like != null)
+                {
+                    ModelState.AddModelError("", "User already exists");
+                    return StatusCode(422, ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var likeMap = _mapper.Map<Like>(likeDto);
+                likeMap.PostId = likeDto.CommentId;
+
+                if (!await _likeRepository.Like(likeMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while savin");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok("Successfully created");
             }
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var likeMap = _mapper.Map<Like>(likeDto);
-            likeMap.User = _userRepository.GetUserById(likeDto.UserId);
-            likeMap.Post = _postRepository.GetPostById(likeDto.CommentId);
-
-            if (!_likeRepository.Like(likeMap))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong while savin");
-                return StatusCode(500, ModelState);
+                return StatusCode(500, ex.Message);
             }
-
-            return Ok("Successfully created");
         }
 
         [HttpDelete("unlike")]
-        public IActionResult DeleteLikePost([FromBody] LikeDto likeDto)
+        public async Task<IActionResult> DeleteLikePost([FromBody] LikeDto likeDto)
         {
-            if (!_likeRepository.PostLikeExists(likeDto.UserId, likeDto.CommentId))
+            try
             {
-                return NotFound();
+                if (!await _likeRepository.PostLikeExists(likeDto.UserId, likeDto.CommentId))
+                {
+                    return NotFound();
+                }
+
+                var likeToDelete = await _likeRepository.GetPostLikeByIds(likeDto.UserId, likeDto.CommentId);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                if (!await _likeRepository.Unlike(likeToDelete))
+                {
+                    ModelState.AddModelError("", "Something went wrong deleting like");
+                }
+
+                return NoContent();
             }
-
-            var likeToDelete = _likeRepository.GetPostLikeByIds(likeDto.UserId, likeDto.CommentId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!_likeRepository.Unlike(likeToDelete))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong deleting like");
+                return StatusCode(500, ex.Message);
             }
-
-            return NoContent();
         }
         [HttpPut("update_like")]
-        public IActionResult UpdateLikePost([FromBody] LikeDto likeDto)
+        public async Task<IActionResult> UpdateLikePost([FromBody] LikeDto likeDto)
         {
-            if (!_likeRepository.PostLikeExists(likeDto.UserId, likeDto.CommentId))
-            {
-                return NotFound();
+            try { 
+                if (!await _likeRepository.PostLikeExists(likeDto.UserId, likeDto.CommentId))
+                {
+                    return NotFound();
+                }
+
+                var likeToUpdate = await _likeRepository.GetPostLikeByIds(likeDto.UserId, likeDto.CommentId);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                likeToUpdate.Type = !likeToUpdate.Type;
+
+                if (!await _likeRepository.UpdateLike(likeToUpdate))
+                {
+                    ModelState.AddModelError("", "Something went wrong updating like");
+                }
+
+                return NoContent();
             }
-
-            var likeToUpdate = _likeRepository.GetPostLikeByIds(likeDto.UserId, likeDto.CommentId);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            likeToUpdate.Type = !likeToUpdate.Type;
-
-            if (!_likeRepository.UpdateLike(likeToUpdate))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong updating like");
+                return StatusCode(500, ex.Message);
             }
-
-            return NoContent();
         }
     }
 }
